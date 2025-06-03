@@ -27,6 +27,22 @@ const translations = {
         height: "키 (cm)",
         weight: "몸무게 (kg)",
         goToMonitor: "모니터링 시작하기",
+        monitorTitle: "실시간 건강 위험 모니터",
+        profileInfo: "프로필 정보",
+        profileInfoSub: "위험도 계산을 위한 건강 프로필",
+        editProfile: "프로필 수정",
+        sittingTimer: "앉은 시간 타이머",
+        sittingTimerSub: "실시간으로 앉은 시간을 추적합니다",
+        startTimer: "타이머 시작",
+        pause: "일시정지",
+        stop: "중지",
+        reset: "초기화",
+        readyToStart: "시작 준비됨",
+        timerRunning: "타이머 실행 중",
+        timerPaused: "타이머 일시정지",
+        totalToday: "오늘 총 시간",
+        realTimeRisk: "실시간 건강 위험도 평가",
+        realTimeRiskSub: "앉기 관련 건강 위험의 실시간 모니터링",
         underweight: "저체중",
         underweightDesc: "균형 잡힌 식단과 운동을 통해 체중 증가를 고려하세요.",
         normalWeight: "정상 체중",
@@ -41,9 +57,7 @@ const translations = {
         totalTimeSubtitle: "누적된 전체 앉은 시간을 확인하세요",
         resetTotal: "누적 시간 초기화",
         start: "시작",
-        pause: "일시정지",
         standUp: "일어났어요!",
-        reset: "초기화",
         riskTitle: "실시간 건강 위험도",
         riskSubtitle: "앉은 시간에 따른 질병 발병 위험 증가율",
         cardiovascular: "심혈관질환",
@@ -74,6 +88,22 @@ const translations = {
         height: "Height (cm)",
         weight: "Weight (kg)",
         goToMonitor: "Start Monitoring",
+        monitorTitle: "Real-time Health Risk Monitor",
+        profileInfo: "Profile Information",
+        profileInfoSub: "Your health profile for risk calculation",
+        editProfile: "Edit Profile",
+        sittingTimer: "Sitting Timer",
+        sittingTimerSub: "Track your sitting time in real-time",
+        startTimer: "Start Timer",
+        pause: "Pause",
+        stop: "Stop",
+        reset: "Reset",
+        readyToStart: "Ready to Start",
+        timerRunning: "Timer Running",
+        timerPaused: "Timer Paused",
+        totalToday: "Total Today",
+        realTimeRisk: "Real-time Health Risk Assessment",
+        realTimeRiskSub: "Live monitoring of sitting-related health risks",
         underweight: "Underweight",
         underweightDesc: "Consider gaining weight through a balanced diet and exercise.",
         normalWeight: "Normal Weight",
@@ -88,9 +118,7 @@ const translations = {
         totalTimeSubtitle: "Check your accumulated sitting time",
         resetTotal: "Reset Total Time",
         start: "Start",
-        pause: "Pause", 
         standUp: "I Stood Up!",
-        reset: "Reset",
         riskTitle: "Real-time Health Risk",
         riskSubtitle: "Disease risk increase based on sitting time",
         cardiovascular: "Cardiovascular",
@@ -121,6 +149,22 @@ const translations = {
         height: "Altura (cm)",
         weight: "Peso (kg)",
         goToMonitor: "Iniciar Monitoreo",
+        monitorTitle: "Monitor de Riesgo de Salud en Tiempo Real",
+        profileInfo: "Información del Perfil",
+        profileInfoSub: "Su perfil de salud para el cálculo de riesgos",
+        editProfile: "Editar Perfil",
+        sittingTimer: "Cronómetro de Estar Sentado",
+        sittingTimerSub: "Rastrea tu tiempo sentado en tiempo real",
+        startTimer: "Iniciar Cronómetro",
+        pause: "Pausar",
+        stop: "Detener",
+        reset: "Reiniciar",
+        readyToStart: "Listo para Comenzar",
+        timerRunning: "Cronómetro en Marcha",
+        timerPaused: "Cronómetro Pausado",
+        totalToday: "Total Hoy",
+        realTimeRisk: "Evaluación de Riesgo de Salud en Tiempo Real",
+        realTimeRiskSub: "Monitoreo en vivo de riesgos relacionados con estar sentado",
         underweight: "Bajo Peso",
         underweightDesc: "Considere aumentar de peso a través de una dieta equilibrada y ejercicio.",
         normalWeight: "Peso Normal",
@@ -135,9 +179,7 @@ const translations = {
         totalTimeSubtitle: "Revisa tu tiempo acumulado sentado",
         resetTotal: "Reiniciar Tiempo Total",
         start: "Iniciar",
-        pause: "Pausar",
         standUp: "¡Me Levanté!",
-        reset: "Reiniciar",
         riskTitle: "Riesgo de Salud en Tiempo Real",
         riskSubtitle: "Aumento del riesgo de enfermedad basado en tiempo sentado",
         cardiovascular: "Cardiovascular",
@@ -168,6 +210,22 @@ const translations = {
         height: "身長 (cm)",
         weight: "体重 (kg)",
         goToMonitor: "モニタリング開始",
+        monitorTitle: "リアルタイム健康リスクモニター",
+        profileInfo: "プロファイル情報",
+        profileInfoSub: "リスク計算のための健康プロファイル",
+        editProfile: "プロファイル編集",
+        sittingTimer: "座位時間タイマー",
+        sittingTimerSub: "座っている時間をリアルタイムで追跡します",
+        startTimer: "タイマー開始",
+        pause: "一時停止",
+        stop: "停止",
+        reset: "リセット",
+        readyToStart: "開始準備完了",
+        timerRunning: "タイマー実行中",
+        timerPaused: "タイマー一時停止",
+        totalToday: "今日の合計",
+        realTimeRisk: "リアルタイム健康リスク評価",
+        realTimeRiskSub: "座位関連健康リスクのライブモニタリング",
         underweight: "低体重",
         underweightDesc: "バランスの取れた食事と運動による体重増加を検討してください。",
         normalWeight: "正常体重",
@@ -182,9 +240,7 @@ const translations = {
         totalTimeSubtitle: "累積した座位時間を確認してください",
         resetTotal: "累積時間リセット",
         start: "開始",
-        pause: "一時停止",
         standUp: "立ち上がりました！",
-        reset: "リセット",
         riskTitle: "リアルタイム健康リスク",
         riskSubtitle: "座位時間に基づく疾患リスクの増加",
         cardiovascular: "心血管疾患",
@@ -1346,10 +1402,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // monitor.html 페이지인지 확인
     const isMonitorPage = window.location.pathname.includes('monitor.html') || 
-                         document.getElementById('timeDisplay') !== null;
+                         document.getElementById('timerDisplay') !== null;
     
     if (isMonitorPage) {
         console.log('📊 Monitor 페이지 감지 - 강제 초기화 시작');
+        
+        // 0. 언어 설정 및 이벤트 리스너 초기화
+        loadUserPreferences();
+        setupEventListeners();
+        updateLanguage();
         
         // 1. 프로필 강제 로드 (localStorage에서)
         const savedProfile = localStorage.getItem('userProfile');
@@ -1389,9 +1450,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // 4. 버튼 상태 초기화
         initializeButtonStates();
         
+        // 5. 타이머 이벤트 리스너 초기화
+        initializeTimer();
+        
         console.log('✅ Monitor 페이지 초기화 완료!');
         console.log('  - 프로필:', userProfile);
         console.log('  - 총시간:', totalSittingTime);
+        console.log('  - 언어:', currentLanguage);
     } else {
         // 기존 초기화 로직 (index.html용)
         initializeApp();
