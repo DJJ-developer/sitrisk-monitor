@@ -807,27 +807,49 @@
         }
 
         function updateRealTimeTotalTimeDisplay() {
-            const totalTimeKey = 'totalSittingTime';
-            const savedTime = localStorage.getItem(totalTimeKey);
-            const totalSeconds = savedTime ? parseInt(savedTime) : 0;
-            
-            let currentSessionSeconds = 0;
-            if (window.timerInterval) {
-                // Timer is running, add current session time
-                const timerDisplay = document.getElementById('timerDisplay').textContent;
-                const timeParts = timerDisplay.split(':');
-                currentSessionSeconds = parseInt(timeParts[0]) * 3600 + parseInt(timeParts[1]) * 60 + parseInt(timeParts[2]);
-            }
-            
-            const realTimeTotal = totalSeconds + currentSessionSeconds;
-            const hours = Math.floor(realTimeTotal / 3600);
-            const minutes = Math.floor((realTimeTotal % 3600) / 60);
-            const seconds = realTimeTotal % 60;
-            
-            const totalDisplay = document.getElementById('totalTimeDisplay');
-            if (totalDisplay) {
-                const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                totalDisplay.innerHTML = `Total Today: <span style="color: ${window.timerInterval ? '#10b981' : '#1e293b'};">${formattedTime}</span>`;
+            try {
+                // Read the correct totalSittingTime object from localStorage
+                const savedData = localStorage.getItem('totalSittingTime');
+                let totalToday = 0;
+                
+                if (savedData) {
+                    const timeData = JSON.parse(savedData);
+                    totalToday = timeData.today || 0;
+                }
+                
+                let currentSessionMs = 0;
+                if (window.timerInterval) {
+                    // Timer is running, get current session time in milliseconds
+                    const timerDisplay = document.getElementById('timerDisplay').textContent;
+                    if (timerDisplay && timerDisplay !== '00:00:00') {
+                        const timeParts = timerDisplay.split(':');
+                        const hours = parseInt(timeParts[0]) || 0;
+                        const minutes = parseInt(timeParts[1]) || 0;
+                        const seconds = parseInt(timeParts[2]) || 0;
+                        currentSessionMs = (hours * 3600 + minutes * 60 + seconds) * 1000;
+                    }
+                }
+                
+                // Calculate total time in milliseconds
+                const realTimeTotalMs = totalToday + currentSessionMs;
+                
+                // Convert to hours, minutes, seconds
+                const totalSeconds = Math.floor(realTimeTotalMs / 1000);
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const secs = totalSeconds % 60;
+                
+                const totalDisplay = document.getElementById('totalTimeDisplay');
+                if (totalDisplay) {
+                    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                    totalDisplay.innerHTML = `Total Today: <span style="color: ${window.timerInterval ? '#10b981' : '#1e293b'}; font-weight: 600;">${formattedTime}</span>`;
+                }
+            } catch (error) {
+                console.warn('⚠️ Total time display error:', error);
+                const totalDisplay = document.getElementById('totalTimeDisplay');
+                if (totalDisplay) {
+                    totalDisplay.innerHTML = `Total Today: <span style="color: #6b7280;">00:00:00</span>`;
+                }
             }
         }
 
