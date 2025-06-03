@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SitRisk Monitor - Real-time Sitting Health Risk Calculator</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Monitor your sitting health risks in real-time. Prevent cardiovascular disease, diabetes, back pain, and obesity with scientific data-driven analysis.">
+    <meta name="keywords" content="sitting health risks, desk job health, cardiovascular disease prevention, diabetes prevention, back pain relief, obesity prevention, workplace wellness">
+    <meta name="author" content="SitRisk Monitor">
+    
+    <!-- Spanish SEO Meta Tags -->
+    <meta name="description" lang="es" content="Monitorea los riesgos de salud por estar sentado en tiempo real. Previene enfermedades cardiovasculares, diabetes, dolor de espalda y obesidad con análisis basados en datos científicos.">
+    <meta name="keywords" lang="es" content="riesgos de salud por estar sentado, salud en trabajos de oficina, prevención de enfermedades cardiovasculares, prevención de diabetes, alivio del dolor de espalda, prevención de obesidad, bienestar en el lugar de trabajo">
+    
+    <!-- Japanese SEO Meta Tags -->
+    <meta name="description" lang="ja" content="リアルタイムで座位による健康リスクをモニタリング。科学的データ分析により心血管疾患、糖尿病、腰痛、肥満を予防。">
+    <meta name="keywords" lang="ja" content="座位健康リスク, デスクワーク健康, 心血管疾患予防, 糖尿病予防, 腰痛軽減, 肥満予防, 職場ウェルネス">
+    
+    <!-- Alternate Language Tags for SEO -->
+    <link rel="alternate" hreflang="en" href="https://yourusername.github.io/sitting-health-monitor/index.html?lang=en">
+    <link rel="alternate" hreflang="es" href="https://yourusername.github.io/sitting-health-monitor/index.html?lang=es">
+    <link rel="alternate" hreflang="ja" href="https://yourusername.github.io/sitting-health-monitor/index.html?lang=ja">
+    <link rel="alternate" hreflang="ko" href="https://yourusername.github.io/sitting-health-monitor/index.html?lang=ko">
+    <link rel="alternate" hreflang="x-default" href="https://yourusername.github.io/sitting-health-monitor/">
+    
+    <!-- Open Graph Meta Tags with Multi-language Support -->
+    <meta property="og:title" content="SitRisk Monitor - Real-time Sitting Health Risk Calculator">
+    <meta property="og:title" lang="es" content="SitRisk Monitor - Calculadora de Riesgos de Salud por Estar Sentado en Tiempo Real">
+    <meta property="og:title" lang="ja" content="SitRisk Monitor - リアルタイム座位健康リスク計算機">
+    <meta property="og:description" content="Monitor your sitting health risks in real-time. Prevent cardiovascular disease, diabetes, back pain, and obesity.">
+    <meta property="og:description" lang="es" content="Monitorea los riesgos de salud por estar sentado en tiempo real. Previene enfermedades cardiovasculares, diabetes, dolor de espalda y obesidad.">
+    <meta property="og:description" lang="ja" content="リアルタイムで座位による健康リスクをモニタリング。心血管疾患、糖尿病、腰痛、肥満を予防。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourusername.github.io/sitting-health-monitor/">
+    <meta property="og:image" content="https://yourusername.github.io/sitting-health-monitor/og-image.png">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SitRisk Monitor - Real-time Sitting Health Risk Calculator">
+    <meta name="twitter:description" content="Monitor your sitting health risks in real-time. Prevent cardiovascular disease, diabetes, back pain, and obesity.">
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* Modern Card Design */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1rem 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .card-subtitle {
+            color: #64748b;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        /* Form Controls */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 1.1rem;
+        }
+
+        .form-input {
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-input.valid {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .form-input.invalid {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        /* Radio buttons for gender */
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 10px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .radio-option:hover {
+            border-color: #667eea;
+            background: #f8fafc;
+        }
+
+        .radio-option.selected {
+            border-color: #667eea;
+            background: #eef2ff;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        /* BMI Display */
+        .bmi-display {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .bmi-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .bmi-category {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .bmi-description {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        /* Modern Button Styles */
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.4);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(107, 114, 128, 0.6);
+        }
+
+        /* Validation Messages */
+        .validation-message {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+        .validation-message.error {
+            color: #dc2626;
+        }
+
+        .validation-message.success {
+            color: #059669;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+                margin: 0.5rem 0;
+            }
+            
+            .card-title {
+                font-size: 2rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* Ad Spaces - Premium Design */
+        .ad-banner {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 2px dashed #6c757d;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            color: #495057;
+            font-weight: 500;
+            margin: 2rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .ad-banner:hover {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border-color: #94a3b8;
+        }
+    </style>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    
+    <!-- Google AdSense -->
+    <!-- 
+    Google AdSense Application Steps:
+    1. Create account at https://www.google.com/adsense/
+    2. Add website: https://yourusername.github.io/sitting-health-monitor
+    3. Replace 'ca-pub-XXXXXXXXXX' with your actual Publisher ID
+    4. Approval usually takes 1-14 days
+    -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Modern Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <span>SitRisk Monitor</span>
+                </div>
+                <nav class="nav-links">
+                    <a href="index.html" class="nav-link">Profile Setup</a>
+                    <a href="monitor.html" class="nav-link">Monitor</a>
+                    <a href="privacy.html" class="nav-link">Privacy</a>
+                    
+                    <!-- Language Selector -->
+                    <div style="position: relative; display: inline-block;">
+                        <button id="languageBtn" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                            <i class="fas fa-globe"></i> <span id="currentLang">한국어</span> <i class="fas fa-chevron-down" style="margin-left: 8px;"></i>
+                        </button>
+                        <div id="languageDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 120px; z-index: 1000; margin-top: 4px;">
+                            <div class="language-option" data-lang="ko" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500; border-bottom: 1px solid #f3f4f6;">🇰🇷 한국어</div>
+                            <div class="language-option" data-lang="en" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500; border-bottom: 1px solid #f3f4f6;">🇺🇸 English</div>
+                            <div class="language-option" data-lang="es" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500; border-bottom: 1px solid #f3f4f6;">🇪🇸 Español</div>
+                            <div class="language-option" data-lang="ja" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500;">🇯🇵 日本語</div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Top Ad Banner -->
+            <div class="ad-banner" style="width: 100% !important; min-height: 120px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border: 3px dashed #6c757d; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 2rem 0; color: #495057; font-size: 16px; text-align: center; padding: 20px;">
+                <div>
+                    <i class="fas fa-ad" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.6;"></i>
+                    <p style="margin: 0; font-weight: 600; font-size: 18px;">📺 Premium Ad Banner - Google AdSense (728x90)</p>
+                    <small style="opacity: 0.8;">✨ High-revenue ads will display here after AdSense approval</small>
+                </div>
+            </div>
+
+            <!-- Profile Setup Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div>
+                        <h1 class="card-title" data-translate="profileTitle">Health Profile Setup</h1>
+                        <p class="card-subtitle" data-translate="profileSubtitle">Enter your information to calculate personalized sitting health risks</p>
+                    </div>
+                </div>
+
+                <form id="profileForm">
+                    <div class="form-grid">
+                        <!-- Gender Selection -->
+                        <div class="form-group">
+                            <label class="form-label" data-translate="gender">Gender</label>
+                            <div class="radio-group">
+                                <label class="radio-option" id="maleOption">
+                                    <input type="radio" name="gender" value="male" checked>
+                                    <i class="fas fa-mars"></i>
+                                    <span data-translate="male">Male</span>
+                                </label>
+                                <label class="radio-option" id="femaleOption">
+                                    <input type="radio" name="gender" value="female">
+                                    <i class="fas fa-venus"></i>
+                                    <span data-translate="female">Female</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Age Input -->
+                        <div class="form-group">
+                            <label for="age" class="form-label" data-translate="age">Age (years)</label>
+                            <input type="number" id="age" name="age" class="form-input" min="18" max="100" value="30" required>
+                            <div id="ageError" class="validation-message error" style="display: none;"></div>
+                        </div>
+
+                        <!-- Height Input -->
+                        <div class="form-group">
+                            <label for="height" class="form-label" data-translate="height">Height (cm)</label>
+                            <input type="number" id="height" name="height" class="form-input" min="140" max="220" value="170" required>
+                            <div id="heightError" class="validation-message error" style="display: none;"></div>
+                        </div>
+
+                        <!-- Weight Input -->
+                        <div class="form-group">
+                            <label for="weight" class="form-label" data-translate="weight">Weight (kg)</label>
+                            <input type="number" id="weight" name="weight" class="form-input" min="40" max="200" step="0.1" value="70" required>
+                            <div id="weightError" class="validation-message error" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <!-- BMI Display -->
+                    <div class="bmi-display">
+                        <div class="bmi-value" id="bmiValue">24.2</div>
+                        <div class="bmi-category" id="bmiCategory">Normal Weight</div>
+                        <div class="bmi-description" id="bmiDescription">Your BMI is within the healthy range. Maintain your current lifestyle with regular exercise.</div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+                        <button type="button" onclick="startMonitoring()" class="btn btn-primary" id="startButton">
+                            <i class="fas fa-chart-line"></i>
+                            <span data-translate="goToMonitor">Start Health Monitoring</span>
+                        </button>
+                        <button type="button" onclick="resetProfile()" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i>
+                            <span data-translate="reset">Reset Profile</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Health Information Card -->
+            <div class="card" style="margin-top: 2rem;">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title" style="font-size: 2rem;">Why Monitor Sitting Health?</h2>
+                        <p class="card-subtitle">Understanding the risks of prolonged sitting</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                    <div style="background: linear-gradient(135deg, #fef2f2, #fee2e2); padding: 1.5rem; border-radius: 16px; border-left: 4px solid #ef4444;">
+                        <h3 style="color: #dc2626; margin-bottom: 1rem; font-size: 1.3rem;">❤️ Cardiovascular Disease</h3>
+                        <p style="color: #7f1d1d; line-height: 1.6;">Prolonged sitting increases risk of heart disease by up to 147%. Poor circulation and reduced heart activity are major factors.</p>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, #fefce8, #fef3c7); padding: 1.5rem; border-radius: 16px; border-left: 4px solid #f59e0b;">
+                        <h3 style="color: #d97706; margin-bottom: 1rem; font-size: 1.3rem;">🩺 Type 2 Diabetes</h3>
+                        <p style="color: #92400e; line-height: 1.6;">Sitting for 8+ hours daily increases diabetes risk by 90%. Reduced insulin sensitivity is a key concern.</p>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); padding: 1.5rem; border-radius: 16px; border-left: 4px solid #22c55e;">
+                        <h3 style="color: #059669; margin-bottom: 1rem; font-size: 1.3rem;">🦴 Back Pain & Posture</h3>
+                        <p style="color: #065f46; line-height: 1.6;">80% of office workers experience back pain. Poor posture leads to chronic spine issues and muscle imbalances.</p>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, #f0f9ff, #dbeafe); padding: 1.5rem; border-radius: 16px; border-left: 4px solid #3b82f6;">
+                        <h3 style="color: #1d4ed8; margin-bottom: 1rem; font-size: 1.3rem;">⚖️ Weight Gain & Obesity</h3>
+                        <p style="color: #1e3a8a; line-height: 1.6;">Sedentary lifestyle reduces calorie burn by 90%. Metabolic slowdown leads to gradual weight gain.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Ad Banner -->
+            <div class="ad-banner" style="width: 100% !important; min-height: 120px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border: 3px dashed #6c757d; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 2rem 0; color: #495057; font-size: 16px; text-align: center; padding: 20px;">
+                <div>
+                    <i class="fas fa-ad" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.6;"></i>
+                    <p style="margin: 0; font-weight: 600; font-size: 18px;">📺 Bottom Premium Ad Banner - Google AdSense (728x90)</p>
+                    <small style="opacity: 0.8;">✨ High-revenue ads will display here after AdSense approval</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    
+    <!-- AdSense Advanced Setup (Use after approval) -->
+    <script src="adsense-setup.js"></script>
+</body>
+</html> 

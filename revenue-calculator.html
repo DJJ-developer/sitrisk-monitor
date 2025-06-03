@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 SitRisk Monitor 수익 계산기</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1a1a1a;
+        }
+        .calculator-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1rem 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .revenue-bar {
+            background: linear-gradient(90deg, #10b981, #34d399);
+            height: 20px;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        .input-field {
+            padding: 10px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 14px;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem;">
+        <!-- 헤더 -->
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h1 style="color: white; font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">
+                💰 SitRisk Monitor 수익 계산기
+            </h1>
+            <p style="color: rgba(255,255,255,0.9); font-size: 1.1rem;">
+                실제 얼마나 벌 수 있는지 계산해보세요!
+            </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <!-- 왼쪽: 입력 패널 -->
+            <div class="calculator-card">
+                <h2 style="color: #1e293b; font-size: 1.5rem; margin-bottom: 1.5rem;">
+                    📊 수치 입력
+                </h2>
+                
+                <!-- 제휴 마케팅 -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: #667eea; margin-bottom: 1rem;">🛒 제휴 마케팅</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">일일 방문자</label>
+                            <input type="number" id="dailyVisitors" class="input-field" value="100" min="0" oninput="calculateRevenue()">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">클릭률 (%)</label>
+                            <input type="number" id="clickRate" class="input-field" value="5" min="0" max="100" step="0.1" oninput="calculateRevenue()">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">구매 전환율 (%)</label>
+                            <input type="number" id="conversionRate" class="input-field" value="3" min="0" max="100" step="0.1" oninput="calculateRevenue()">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">평균 수수료 (원)</label>
+                            <input type="number" id="avgCommission" class="input-field" value="15000" min="0" oninput="calculateRevenue()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 프리미엄 구독 -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: #10b981; margin-bottom: 1rem;">👑 프리미엄 구독</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">구독자 수</label>
+                            <input type="number" id="subscribers" class="input-field" value="50" min="0" oninput="calculateRevenue()">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">월 구독료 (원)</label>
+                            <input type="number" id="subscriptionFee" class="input-field" value="9900" min="0" oninput="calculateRevenue()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B2B 기업 -->
+                <div>
+                    <h3 style="color: #8b5cf6; margin-bottom: 1rem;">🏢 B2B 기업</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">기업 고객 수</label>
+                            <input type="number" id="enterpriseClients" class="input-field" value="2" min="0" oninput="calculateRevenue()">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">평균 월 계약료 (원)</label>
+                            <input type="number" id="avgContract" class="input-field" value="200000" min="0" oninput="calculateRevenue()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 오른쪽: 결과 패널 -->
+            <div class="calculator-card">
+                <h2 style="color: #1e293b; font-size: 1.5rem; margin-bottom: 1.5rem;">
+                    💰 예상 수익
+                </h2>
+
+                <!-- 월별 수익 -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: #f59e0b; margin-bottom: 1rem;">📅 월별 수익</h3>
+                    
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>제휴 마케팅</span>
+                            <span id="monthlyAffiliate" style="font-weight: 700; color: #667eea;">₩0</span>
+                        </div>
+                        <div style="background: #e5e7eb; height: 8px; border-radius: 4px;">
+                            <div id="affiliateBar" class="revenue-bar" style="height: 8px; width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>프리미엄 구독</span>
+                            <span id="monthlyPremium" style="font-weight: 700; color: #10b981;">₩0</span>
+                        </div>
+                        <div style="background: #e5e7eb; height: 8px; border-radius: 4px;">
+                            <div id="premiumBar" class="revenue-bar" style="height: 8px; width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>B2B 기업</span>
+                            <span id="monthlyB2B" style="font-weight: 700; color: #8b5cf6;">₩0</span>
+                        </div>
+                        <div style="background: #e5e7eb; height: 8px; border-radius: 4px;">
+                            <div id="b2bBar" class="revenue-bar" style="height: 8px; width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 2px solid #e5e7eb; padding-top: 1rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 700;">
+                            <span>총 월 수익</span>
+                            <span id="totalMonthly" style="color: #059669;">₩0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 연간 예상 -->
+                <div>
+                    <h3 style="color: #ef4444; margin-bottom: 1rem;">📈 연간 예상</h3>
+                    <div style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); padding: 1.5rem; border-radius: 12px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem;" id="yearlyRevenue">
+                                ₩0
+                            </div>
+                            <div style="color: #64748b;">연간 총 수익</div>
+                        </div>
+                        
+                        <div style="margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.9rem;">
+                            <div style="text-align: center;">
+                                <div style="font-weight: 700; color: #10b981;" id="monthlyAvg">₩0</div>
+                                <div style="color: #64748b;">월 평균</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-weight: 700; color: #667eea;" id="dailyAvg">₩0</div>
+                                <div style="color: #64748b;">일 평균</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 액션 버튼들 -->
+        <div style="text-align: center; margin-top: 3rem;">
+            <button onclick="resetCalculator()" style="background: #6b7280; color: white; padding: 12px 24px; border: none; border-radius: 12px; margin-right: 1rem; cursor: pointer;">
+                <i class="fas fa-redo"></i> 초기화
+            </button>
+            <button onclick="saveResults()" style="background: #10b981; color: white; padding: 12px 24px; border: none; border-radius: 12px; margin-right: 1rem; cursor: pointer;">
+                <i class="fas fa-save"></i> 결과 저장
+            </button>
+            <a href="monitor.html" style="background: #667eea; color: white; padding: 12px 24px; border-radius: 12px; text-decoration: none; display: inline-block;">
+                <i class="fas fa-arrow-left"></i> 모니터로 돌아가기
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function calculateRevenue() {
+            // 입력값 가져오기
+            const dailyVisitors = parseInt(document.getElementById('dailyVisitors').value) || 0;
+            const clickRate = parseFloat(document.getElementById('clickRate').value) || 0;
+            const conversionRate = parseFloat(document.getElementById('conversionRate').value) || 0;
+            const avgCommission = parseInt(document.getElementById('avgCommission').value) || 0;
+            
+            const subscribers = parseInt(document.getElementById('subscribers').value) || 0;
+            const subscriptionFee = parseInt(document.getElementById('subscriptionFee').value) || 0;
+            
+            const enterpriseClients = parseInt(document.getElementById('enterpriseClients').value) || 0;
+            const avgContract = parseInt(document.getElementById('avgContract').value) || 0;
+
+            // 제휴 마케팅 수익 계산
+            const monthlyClicks = dailyVisitors * 30 * (clickRate / 100);
+            const monthlyPurchases = monthlyClicks * (conversionRate / 100);
+            const affiliateRevenue = Math.round(monthlyPurchases * avgCommission);
+
+            // 프리미엄 구독 수익
+            const premiumRevenue = subscribers * subscriptionFee;
+
+            // B2B 수익
+            const b2bRevenue = enterpriseClients * avgContract;
+
+            // 총 수익
+            const totalMonthly = affiliateRevenue + premiumRevenue + b2bRevenue;
+            const totalYearly = totalMonthly * 12;
+
+            // 화면 업데이트
+            document.getElementById('monthlyAffiliate').textContent = `₩${affiliateRevenue.toLocaleString()}`;
+            document.getElementById('monthlyPremium').textContent = `₩${premiumRevenue.toLocaleString()}`;
+            document.getElementById('monthlyB2B').textContent = `₩${b2bRevenue.toLocaleString()}`;
+            document.getElementById('totalMonthly').textContent = `₩${totalMonthly.toLocaleString()}`;
+            document.getElementById('yearlyRevenue').textContent = `₩${totalYearly.toLocaleString()}`;
+            document.getElementById('monthlyAvg').textContent = `₩${totalMonthly.toLocaleString()}`;
+            document.getElementById('dailyAvg').textContent = `₩${Math.round(totalMonthly / 30).toLocaleString()}`;
+
+            // 프로그레스 바 업데이트
+            const maxRevenue = Math.max(affiliateRevenue, premiumRevenue, b2bRevenue, 1);
+            document.getElementById('affiliateBar').style.width = `${(affiliateRevenue / maxRevenue) * 100}%`;
+            document.getElementById('premiumBar').style.width = `${(premiumRevenue / maxRevenue) * 100}%`;
+            document.getElementById('b2bBar').style.width = `${(b2bRevenue / maxRevenue) * 100}%`;
+        }
+
+        function resetCalculator() {
+            document.getElementById('dailyVisitors').value = 100;
+            document.getElementById('clickRate').value = 5;
+            document.getElementById('conversionRate').value = 3;
+            document.getElementById('avgCommission').value = 15000;
+            document.getElementById('subscribers').value = 50;
+            document.getElementById('subscriptionFee').value = 9900;
+            document.getElementById('enterpriseClients').value = 2;
+            document.getElementById('avgContract').value = 200000;
+            calculateRevenue();
+        }
+
+        function saveResults() {
+            const results = {
+                timestamp: new Date().toISOString(),
+                inputs: {
+                    dailyVisitors: document.getElementById('dailyVisitors').value,
+                    clickRate: document.getElementById('clickRate').value,
+                    conversionRate: document.getElementById('conversionRate').value,
+                    avgCommission: document.getElementById('avgCommission').value,
+                    subscribers: document.getElementById('subscribers').value,
+                    subscriptionFee: document.getElementById('subscriptionFee').value,
+                    enterpriseClients: document.getElementById('enterpriseClients').value,
+                    avgContract: document.getElementById('avgContract').value
+                },
+                results: {
+                    monthlyAffiliate: document.getElementById('monthlyAffiliate').textContent,
+                    monthlyPremium: document.getElementById('monthlyPremium').textContent,
+                    monthlyB2B: document.getElementById('monthlyB2B').textContent,
+                    totalMonthly: document.getElementById('totalMonthly').textContent,
+                    yearlyRevenue: document.getElementById('yearlyRevenue').textContent
+                }
+            };
+            
+            localStorage.setItem('revenueCalculation', JSON.stringify(results));
+            alert('💾 계산 결과가 저장되었습니다!\n\n개발자 도구에서 localStorage를 확인하세요.');
+        }
+
+        // 초기 계산
+        calculateRevenue();
+    </script>
+</body>
+</html> 

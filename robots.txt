@@ -1,0 +1,59 @@
+User-agent: *
+Allow: /
+
+# 주요 페이지 우선 크롤링
+Allow: /index.html
+Allow: /monitor.html
+Allow: /privacy.html
+
+# 리소스 파일 허용
+Allow: /script.js
+Allow: /adsense-setup.js
+
+# 사이트맵 위치 지정
+Sitemap: https://[사용자명].github.io/sitting-health-monitor/sitemap.xml
+
+# 크롤링 속도 조절 (1초 간격)
+Crawl-delay: 1
+
+# AdSense 봇 허용
+User-agent: Mediapartners-Google
+Allow: /
+
+# Google 애드센스 최적화를 위한 설정
+User-agent: AdsBot-Google
+Allow: /
+
+# Google 모바일 봇 허용
+User-agent: Googlebot-Mobile
+Allow: /
+
+# 주요 검색엔진 봇 허용
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# 소셜 미디어 봇 허용 (공유 최적화)
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+# 건강 관련 키워드 힌트 (SEO 최적화)
+# 주요 타겟 키워드:
+# - 앉기 위험
+# - 직장인 건강
+# - 심혈관질환 예방
+# - 당뇨병 예방
+# - 요통 예방
+# - sitting health risks
+# - desk job health 
