@@ -27,6 +27,14 @@ const translations = {
         height: "키 (cm)",
         weight: "몸무게 (kg)",
         goToMonitor: "모니터링 시작하기",
+        underweight: "저체중",
+        underweightDesc: "균형 잡힌 식단과 운동을 통해 체중 증가를 고려하세요.",
+        normalWeight: "정상 체중",
+        normalWeightDesc: "BMI가 건강한 범위에 있습니다. 규칙적인 운동으로 현재 상태를 유지하세요.",
+        overweight: "과체중",
+        overweightDesc: "식단 조절과 신체활동 증가를 통한 체중 관리를 고려하세요.",
+        obese: "비만",
+        obeseDesc: "체중 관리 계획을 위해 의료 전문가와 상담하시기 바랍니다.",
         timerTitle: "앉은 시간 모니터링",
         timerSubtitle: "실시간으로 앉은 시간을 추적합니다",
         totalTimeTitle: "총 앉아있었던 시간",
@@ -66,6 +74,14 @@ const translations = {
         height: "Height (cm)",
         weight: "Weight (kg)",
         goToMonitor: "Start Monitoring",
+        underweight: "Underweight",
+        underweightDesc: "Consider gaining weight through a balanced diet and exercise.",
+        normalWeight: "Normal Weight",
+        normalWeightDesc: "Your BMI is within the healthy range. Maintain your current lifestyle with regular exercise.",
+        overweight: "Overweight",
+        overweightDesc: "Consider weight management through diet and increased physical activity.",
+        obese: "Obese",
+        obeseDesc: "Consult with a healthcare professional for a weight management plan.",
         timerTitle: "Sitting Time Monitoring",
         timerSubtitle: "Track your sitting time in real-time",
         totalTimeTitle: "Total Sitting Time",
@@ -105,6 +121,14 @@ const translations = {
         height: "Altura (cm)",
         weight: "Peso (kg)",
         goToMonitor: "Iniciar Monitoreo",
+        underweight: "Bajo Peso",
+        underweightDesc: "Considere aumentar de peso a través de una dieta equilibrada y ejercicio.",
+        normalWeight: "Peso Normal",
+        normalWeightDesc: "Su IMC está dentro del rango saludable. Mantenga su estilo de vida actual con ejercicio regular.",
+        overweight: "Sobrepeso",
+        overweightDesc: "Considere el control de peso a través de la dieta y aumento de la actividad física.",
+        obese: "Obesidad",
+        obeseDesc: "Consulte con un profesional de la salud para un plan de control de peso.",
         timerTitle: "Monitoreo de Tiempo Sentado",
         timerSubtitle: "Rastrea tu tiempo sentado en tiempo real",
         totalTimeTitle: "Tiempo Total Sentado",
@@ -144,6 +168,14 @@ const translations = {
         height: "身長 (cm)",
         weight: "体重 (kg)",
         goToMonitor: "モニタリング開始",
+        underweight: "低体重",
+        underweightDesc: "バランスの取れた食事と運動による体重増加を検討してください。",
+        normalWeight: "正常体重",
+        normalWeightDesc: "BMIは健康的な範囲内です。定期的な運動で現在の状態を維持してください。",
+        overweight: "過体重",
+        overweightDesc: "食事療法と身体活動の増加による体重管理を検討してください。",
+        obese: "肥満",
+        obeseDesc: "体重管理計画のために医療専門家にご相談ください。",
         timerTitle: "座位時間モニタリング",
         timerSubtitle: "座っている時間をリアルタイムで追跡します",
         totalTimeTitle: "総座位時間",
@@ -413,45 +445,93 @@ function validateBMIRealTime() {
 
 // Profile functions
 function updateProfile() {
-    const gender = document.getElementById('gender')?.value;
-    const age = parseInt(document.getElementById('age')?.value);
-    const height = parseInt(document.getElementById('height')?.value);
-    const weight = parseInt(document.getElementById('weight')?.value);
+    const age = parseInt(document.getElementById('age').value);
+    const height = parseInt(document.getElementById('height').value);
+    const weight = parseFloat(document.getElementById('weight').value);
+    const gender = document.querySelector('input[name="gender"]:checked').value;
+
+    const errors = validateUserInput(age, height, weight);
     
-    // 빈 값 체크
-    if (!age || !height || !weight) {
-        alert('모든 정보를 입력해주세요.');
-        return;
+    if (errors.length > 0) {
+        showValidationErrors(errors);
+        return false;
     }
-    
-    // 숫자 유효성 체크
-    if (isNaN(age) || isNaN(height) || isNaN(weight)) {
-        alert('나이, 키, 몸무게는 숫자로 입력해주세요.');
-        return;
-    }
-    
-    // 입력값 범위 검증
-    const validationErrors = validateUserInput(age, height, weight);
-    if (validationErrors.length > 0) {
-        showValidationErrors(validationErrors);
-        return;
-    }
-    
-    userProfile = {
-        gender,
-        age,
-        height,
-        weight,
-        bmi: calculateBMI(weight, height)
-    };
-    
+
+    userProfile = { age, height, weight, gender };
     saveUserProfile();
-    showNotification('프로필이 저장되었습니다!', 'success');
+    
+    const bmi = calculateBMI(weight, height);
+    document.getElementById('bmiValue').textContent = bmi.toFixed(1);
+    
+    const bmiCategory = getBMICategory(bmi);
+    document.getElementById('bmiCategory').textContent = bmiCategory.category;
+    document.getElementById('bmiDescription').textContent = bmiCategory.description;
+
+    updateRiskDisplay();
+    
+    return true;
 }
 
 function calculateBMI(weight, height) {
     const heightInMeters = height / 100;
     return weight / (heightInMeters * heightInMeters);
+}
+
+// Function to get BMI category and description
+function getBMICategory(bmi) {
+    const translations = getTranslations();
+    
+    if (bmi < 18.5) {
+        return {
+            category: translations.underweight || 'Underweight',
+            description: translations.underweightDesc || 'Consider gaining weight through a balanced diet and exercise.'
+        };
+    } else if (bmi < 25) {
+        return {
+            category: translations.normalWeight || 'Normal Weight',
+            description: translations.normalWeightDesc || 'Your BMI is within the healthy range. Maintain your current lifestyle with regular exercise.'
+        };
+    } else if (bmi < 30) {
+        return {
+            category: translations.overweight || 'Overweight',
+            description: translations.overweightDesc || 'Consider weight management through diet and increased physical activity.'
+        };
+    } else {
+        return {
+            category: translations.obese || 'Obese',
+            description: translations.obeseDesc || 'Consult with a healthcare professional for a weight management plan.'
+        };
+    }
+}
+
+// Function to start monitoring - redirects to monitor.html
+function startMonitoring() {
+    // Save the current profile first
+    if (updateProfile()) {
+        // Redirect to monitor page
+        window.location.href = 'monitor.html';
+    } else {
+        // Show error if profile is invalid
+        showNotification('프로필 정보를 확인해주세요', 'error');
+    }
+}
+
+// Function to reset profile
+function resetProfile() {
+    document.getElementById('age').value = '30';
+    document.getElementById('height').value = '170';
+    document.getElementById('weight').value = '70';
+    document.querySelector('input[name="gender"][value="male"]').checked = true;
+    
+    // Update BMI display
+    const bmi = calculateBMI(70, 170);
+    document.getElementById('bmiValue').textContent = bmi.toFixed(1);
+    
+    const bmiCategory = getBMICategory(bmi);
+    document.getElementById('bmiCategory').textContent = bmiCategory.category;
+    document.getElementById('bmiDescription').textContent = bmiCategory.description;
+    
+    showNotification('프로필이 초기화되었습니다', 'success');
 }
 
 // Timer functions
