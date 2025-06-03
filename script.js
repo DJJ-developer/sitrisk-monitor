@@ -542,8 +542,21 @@ function startTimer() {
         
         timerInterval = setInterval(updateTimer, 1000);
         
-        document.getElementById('startBtn').style.display = 'none';
-        document.getElementById('pauseBtn').style.display = 'inline-flex';
+        // Check if we're on monitor page or regular page
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        
+        if (startBtn && pauseBtn) {
+            // Monitor page buttons
+            startBtn.style.display = 'none';
+            pauseBtn.style.display = 'inline-flex';
+        } else {
+            // Regular page buttons (if they exist)
+            const regularStartBtn = document.getElementById('startButton');
+            const regularPauseBtn = document.getElementById('pauseButton');
+            if (regularStartBtn) regularStartBtn.style.display = 'none';
+            if (regularPauseBtn) regularPauseBtn.style.display = 'inline-flex';
+        }
         
         showNotification('모니터링이 시작되었습니다.', 'info');
     }
@@ -554,8 +567,21 @@ function pauseTimer() {
         isTimerRunning = false;
         clearInterval(timerInterval);
         
-        document.getElementById('startBtn').style.display = 'inline-flex';
-        document.getElementById('pauseBtn').style.display = 'none';
+        // Check if we're on monitor page or regular page
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        
+        if (startBtn && pauseBtn) {
+            // Monitor page buttons
+            startBtn.style.display = 'inline-flex';
+            pauseBtn.style.display = 'none';
+        } else {
+            // Regular page buttons (if they exist)
+            const regularStartBtn = document.getElementById('startButton');
+            const regularPauseBtn = document.getElementById('pauseButton');
+            if (regularStartBtn) regularStartBtn.style.display = 'inline-flex';
+            if (regularPauseBtn) regularPauseBtn.style.display = 'none';
+        }
         
         // Restore original total time display when paused
         updateTotalTimeDisplay();
@@ -567,7 +593,7 @@ function pauseTimer() {
 function resetTimer() {
     isTimerRunning = false;
     currentTime = 0;
-        clearInterval(timerInterval);
+    clearInterval(timerInterval);
     
     updateTimerDisplay();
     resetRiskDisplay();
@@ -575,8 +601,21 @@ function resetTimer() {
     // Restore original total time display when reset
     updateTotalTimeDisplay();
     
-    document.getElementById('startBtn').style.display = 'inline-flex';
-    document.getElementById('pauseBtn').style.display = 'none';
+    // Check if we're on monitor page or regular page
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    
+    if (startBtn && pauseBtn) {
+        // Monitor page buttons
+        startBtn.style.display = 'inline-flex';
+        pauseBtn.style.display = 'none';
+    } else {
+        // Regular page buttons (if they exist)
+        const regularStartBtn = document.getElementById('startButton');
+        const regularPauseBtn = document.getElementById('pauseButton');
+        if (regularStartBtn) regularStartBtn.style.display = 'inline-flex';
+        if (regularPauseBtn) regularPauseBtn.style.display = 'none';
+    }
     
     showNotification('타이머가 초기화되었습니다.', 'info');
 }
@@ -670,19 +709,50 @@ function updateHealthRisks(seconds) {
             obesity: riskFormulas.obesity(seconds, userProfile.age)
         };
         
-        Object.keys(risks).forEach(riskType => {
-            const element = document.getElementById(`${riskType}Risk`);
-            if (element) {
-                element.textContent = `${risks[riskType]}%`;
-                
-                const card = element.closest('.risk-card');
-                if (card) {
-                    updateRiskCardColor(card, risks[riskType]);
+        // Check if we're on monitor.html page (different element IDs)
+        const isMonitorPage = document.getElementById('cardioRisk') !== null;
+        
+        if (isMonitorPage) {
+            // Monitor page element IDs
+            const riskElements = {
+                cardiovascular: document.getElementById('cardioRisk'),
+                diabetes: document.getElementById('diabetesRisk'),
+                backPain: document.getElementById('backRisk'),
+                obesity: document.getElementById('obesityRisk')
+            };
+            
+            Object.keys(risks).forEach(riskType => {
+                const element = riskElements[riskType];
+                if (element) {
+                    element.textContent = `+${risks[riskType]}%`;
+                    
+                    // Update risk level styling
+                    element.className = 'risk-percentage';
+                    if (risks[riskType] < 10) {
+                        element.classList.add('risk-low');
+                    } else if (risks[riskType] < 20) {
+                        element.classList.add('risk-medium');
+                    } else {
+                        element.classList.add('risk-high');
+                    }
                 }
-            } else {
-                console.warn(`⚠️ 위험도 요소 없음: ${riskType}Risk`);
-            }
-        });
+            });
+        } else {
+            // Original page element IDs  
+            Object.keys(risks).forEach(riskType => {
+                const element = document.getElementById(`${riskType}Risk`);
+                if (element) {
+                    element.textContent = `${risks[riskType]}%`;
+                    
+                    const card = element.closest('.risk-card');
+                    if (card) {
+                        updateRiskCardColor(card, risks[riskType]);
+                    }
+                } else {
+                    console.warn(`⚠️ 위험도 요소 없음: ${riskType}Risk`);
+                }
+            });
+        }
         
         // 디버깅 로그 (1분마다만)
         const minutes = Math.floor(seconds / 60);
@@ -1107,6 +1177,98 @@ function getCurrentRiskLevel() {
     
     const avgRisk = (risks.cardiovascular + risks.diabetes + risks.backPain + risks.obesity) / 4;
     return Math.round(avgRisk * 100) / 100;
+}
+
+// Initialize timer functions for monitor.html page
+function initializeTimer() {
+    console.log('🔧 Initializing timer event listeners...');
+    
+    // Get button elements
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    
+    // Add event listeners
+    if (startBtn) {
+        startBtn.addEventListener('click', () => {
+            console.log('▶️ Start button clicked');
+            startTimer();
+        });
+    }
+    
+    if (pauseBtn) {
+        pauseBtn.addEventListener('click', () => {
+            console.log('⏸️ Pause button clicked');
+            pauseTimer();
+        });
+    }
+    
+    if (stopBtn) {
+        stopBtn.addEventListener('click', () => {
+            console.log('⏹️ Stop button clicked');
+            standUp();
+        });
+    }
+    
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            console.log('🔄 Reset button clicked');
+            resetTimer();
+        });
+    }
+    
+    console.log('✅ Timer event listeners initialized');
+}
+
+// Update timer display function for monitor.html
+function updateTimerDisplayMonitor() {
+    const hours = Math.floor(currentTime / 3600000);
+    const minutes = Math.floor((currentTime % 3600000) / 60000);
+    const seconds = Math.floor((currentTime % 60000) / 1000);
+    
+    const display = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
+    // Update timer display
+    const timerDisplay = document.getElementById('timerDisplay');
+    if (timerDisplay) {
+        timerDisplay.textContent = display;
+    }
+    
+    // Update timer status
+    const timerStatus = document.getElementById('timerStatus');
+    if (timerStatus) {
+        if (isTimerRunning) {
+            timerStatus.textContent = 'Timer Running';
+            timerStatus.className = 'timer-status status-active';
+        } else if (currentTime > 0) {
+            timerStatus.textContent = 'Timer Paused';
+            timerStatus.className = 'timer-status status-paused';
+        } else {
+            timerStatus.textContent = 'Ready to Start';
+            timerStatus.className = 'timer-status status-stopped';
+        }
+    }
+}
+
+// Override the updateTimerDisplay function for monitor page
+function updateTimerDisplay() {
+    if (document.getElementById('timerDisplay')) {
+        // Monitor page
+        updateTimerDisplayMonitor();
+    } else {
+        // Original function for other pages
+        const hours = Math.floor(currentTime / 3600000);
+        const minutes = Math.floor((currentTime % 3600000) / 60000);
+        const seconds = Math.floor((currentTime % 60000) / 1000);
+        
+        const display = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        const timeDisplay = document.getElementById('timeDisplay');
+        if (timeDisplay) {
+            timeDisplay.textContent = display;
+        }
+    }
 }
 
 // Initialize app when DOM is loaded
