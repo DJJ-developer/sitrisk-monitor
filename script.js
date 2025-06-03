@@ -816,43 +816,64 @@ function showBreakAlert(minutes) {
 }
 
 function showNotification(message, type = 'info') {
+    // Calculate position based on existing notifications
+    const existingNotifications = document.querySelectorAll('.notification');
+    const topOffset = 20 + (existingNotifications.length * 80); // 80px spacing between notifications
+    
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.style.cssText = `
         position: fixed;
-        top: 20px;
+        top: ${topOffset}px;
         right: 20px;
         background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : type === 'error' ? '#ef4444' : '#3b82f6'};
         color: white;
         padding: 1rem 1.5rem;
         border-radius: 12px;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-        z-index: 1000;
+        z-index: ${1000 + existingNotifications.length};
         max-width: 300px;
         font-weight: 500;
         transform: translateX(100%);
-        transition: transform 0.3s ease;
+        transition: all 0.3s ease;
+        opacity: 0;
     `;
     
     notification.textContent = message;
     document.body.appendChild(notification);
     
+    // Animate in
     setTimeout(() => {
         notification.style.transform = 'translateX(0)';
+        notification.style.opacity = '1';
     }, 100);
     
+    // Auto remove after 4 seconds
     setTimeout(() => {
         notification.style.transform = 'translateX(100%)';
+        notification.style.opacity = '0';
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.parentNode.removeChild(notification);
+                // Reposition remaining notifications
+                repositionNotifications();
             }
         }, 300);
     }, 4000);
 }
 
+// Helper function to reposition notifications after one is removed
+function repositionNotifications() {
+    repositionAllNotifications();
+}
+
 function showAdvancedNotification(title, message, type = 'info', duration = 5000) {
+    // Calculate position based on existing notifications
+    const existingNotifications = document.querySelectorAll('.notification, .advanced-notification');
+    const topOffset = 20 + (existingNotifications.length * 80);
+    
     const notification = document.createElement('div');
+    notification.className = `advanced-notification advanced-notification-${type}`;
     
     const colors = {
         success: { bg: '#10b981', border: '#059669' },
@@ -863,20 +884,21 @@ function showAdvancedNotification(title, message, type = 'info', duration = 5000
     
     const color = colors[type] || colors.info;
     
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
+    notification.style.cssText = `
+        position: fixed;
+        top: ${topOffset}px;
+        right: 20px;
         background: ${color.bg};
         border-left: 4px solid ${color.border};
-            color: white;
+        color: white;
         padding: 1rem 1.5rem;
         border-radius: 12px;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-        z-index: 1000;
-            max-width: 350px;
+        z-index: ${1000 + existingNotifications.length};
+        max-width: 350px;
         transform: translateX(100%);
-            transition: transform 0.3s ease;
+        transition: all 0.3s ease;
+        opacity: 0;
     `;
     
     notification.innerHTML = `
@@ -884,20 +906,36 @@ function showAdvancedNotification(title, message, type = 'info', duration = 5000
         <div style="font-size: 0.9rem; opacity: 0.9;">${message}</div>
     `;
     
-        document.body.appendChild(notification);
+    document.body.appendChild(notification);
     
+    // Animate in
     setTimeout(() => {
         notification.style.transform = 'translateX(0)';
+        notification.style.opacity = '1';
     }, 100);
     
+    // Auto remove after duration
     setTimeout(() => {
         notification.style.transform = 'translateX(100%)';
+        notification.style.opacity = '0';
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.parentNode.removeChild(notification);
+                // Reposition remaining notifications
+                repositionAllNotifications();
             }
         }, 300);
     }, duration);
+}
+
+// Updated helper function to reposition all types of notifications
+function repositionAllNotifications() {
+    const allNotifications = document.querySelectorAll('.notification, .advanced-notification');
+    allNotifications.forEach((notification, index) => {
+        const newTopOffset = 20 + (index * 80);
+        notification.style.top = `${newTopOffset}px`;
+        notification.style.zIndex = 1000 + index;
+    });
 }
 
 // Social sharing functions
@@ -1116,6 +1154,12 @@ function resetTotalTime() {
 
 // Add new function to update total time display in real-time
 function updateRealTimeTotalDisplay() {
+    // Don't run on monitor.html page to prevent conflicts
+    if (document.getElementById('timerDisplay')) {
+        // This is monitor.html, skip to prevent conflicts
+        return;
+    }
+    
     const todayDisplay = document.getElementById('totalTimeDisplay');
     const weeklyDisplay = document.getElementById('weeklyTimeDisplay');
     const allTimeDisplay = document.getElementById('allTimeDisplay');
@@ -1133,12 +1177,12 @@ function updateRealTimeTotalDisplay() {
 
 // 타이머가 1시간(3600초) 경과 시 알림
 function checkOneHourNotification() {
-    if (currentTime >= 3600 && !window._oneHourNotified) {
+    if (currentTime >= 3600000 && !window._oneHourNotified) {
         window._oneHourNotified = true;
         sendOneHourNotification();
     }
     // 1시간 미만으로 다시 돌아가면 플래그 해제(리셋/일어섬 등)
-    if (currentTime < 3600) {
+    if (currentTime < 3600000) {
         window._oneHourNotified = false;
     }
 }
