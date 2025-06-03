@@ -541,6 +541,8 @@ function startTimer() {
         isTimerRunning = true;
         
         timerInterval = setInterval(updateTimer, 1000);
+        // Set window.timerInterval for monitor.html compatibility
+        window.timerInterval = timerInterval;
         
         // Check if we're on monitor page or regular page
         const startBtn = document.getElementById('startBtn');
@@ -566,6 +568,8 @@ function pauseTimer() {
     if (isTimerRunning) {
         isTimerRunning = false;
         clearInterval(timerInterval);
+        // Clear window.timerInterval for monitor.html compatibility
+        window.timerInterval = null;
         
         // Check if we're on monitor page or regular page
         const startBtn = document.getElementById('startBtn');
@@ -594,6 +598,8 @@ function resetTimer() {
     isTimerRunning = false;
     currentTime = 0;
     clearInterval(timerInterval);
+    // Clear window.timerInterval for monitor.html compatibility
+    window.timerInterval = null;
     
     updateTimerDisplay();
     resetRiskDisplay();
@@ -629,7 +635,26 @@ function standUp() {
         addToTotalSittingTime(currentTime);
         
         showNotification(`훌륭해요! 건강 위험이 ${riskReduction}% 감소했습니다.`, 'success');
-        resetTimer();
+        
+        // Reset timer state
+        isTimerRunning = false;
+        currentTime = 0;
+        clearInterval(timerInterval);
+        // Clear window.timerInterval for monitor.html compatibility
+        window.timerInterval = null;
+        
+        updateTimerDisplay();
+        resetRiskDisplay();
+        updateTotalTimeDisplay();
+        
+        // Reset button states
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        
+        if (startBtn && pauseBtn) {
+            startBtn.style.display = 'inline-flex';
+            pauseBtn.style.display = 'none';
+        }
     } else {
         showNotification('좋은 습관입니다! 계속 유지하세요.', 'success');
     }
