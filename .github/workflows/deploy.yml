@@ -14,6 +14,10 @@ jobs:
       pages: write
       id-token: write
     
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     steps:
     - name: 📂 Checkout Repository
       uses: actions/checkout@v4
@@ -46,17 +50,22 @@ jobs:
             echo "✅ Found: $file"
           fi
         done
+
+    - name: 🔧 Setup Pages
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: actions/configure-pages@v4
+      
+    - name: 📦 Upload artifact
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: '.'
         
     - name: 🚀 Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./
-        exclude_assets: |
-          .github
-          .gitignore
-          
+      id: deployment
+      uses: actions/deploy-pages@v4
+        
     - name: 📈 Generate Deployment Report
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       run: |
