@@ -1625,6 +1625,43 @@ function updateStatistics() {
         const element = document.getElementById(id);
         if (element) element.textContent = value;
     });
+    
+    // Update Personal Goals section with real-time data
+    updatePersonalGoalsDisplay(stats);
+}
+
+function updatePersonalGoalsDisplay(stats) {
+    const progressBar = document.getElementById('goalProgressBar');
+    const currentGoalTime = document.getElementById('currentGoalTime');
+    
+    if (progressBar) {
+        const progressPercent = Math.min(100, stats.goalProgress);
+        progressBar.style.width = `${progressPercent}%`;
+        
+        // Change color based on progress
+        if (progressPercent > 100) {
+            progressBar.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+        } else if (progressPercent > 80) {
+            progressBar.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+        } else {
+            progressBar.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+        }
+    }
+    
+    if (currentGoalTime) {
+        currentGoalTime.textContent = formatTimeDisplay(stats.totalToday);
+    }
+    
+    // Debug logging every 10 seconds when timer is running
+    if (isTimerRunning && Math.floor(currentTime / 1000) % 10 === 0) {
+        console.log('📊 Real-time Stats Update:', {
+            totalTodayMs: stats.totalToday,
+            totalTodayFormatted: formatTimeDisplay(stats.totalToday),
+            currentSessionMs: currentTime,
+            goalProgress: stats.goalProgress.toFixed(2) + '%',
+            isTimerRunning: isTimerRunning
+        });
+    }
 }
 
 function calculateStatistics() {
@@ -1635,7 +1672,7 @@ function calculateStatistics() {
         data = JSON.parse(savedData);
     }
     
-    const currentSessionMs = isTimerRunning ? currentTime * 1000 : 0;
+    const currentSessionMs = isTimerRunning ? currentTime : 0;
     const totalTodayMs = data.today + currentSessionMs;
     
     return {
@@ -1739,7 +1776,7 @@ function createTimeDistributionChart() {
         chartInstances.time.destroy();
     }
     
-    const currentHours = currentTime / 3600;
+    const currentHours = currentTime / (1000 * 3600);
     const activeHours = 2; // Assumed active time
     const remainingHours = Math.max(0, dailyGoal - currentHours - activeHours);
     
@@ -1813,21 +1850,7 @@ function updateGoal() {
 
 function updateGoalProgress() {
     const stats = calculateStatistics();
-    const progressBar = document.getElementById('goalProgressBar');
-    const currentGoalTime = document.getElementById('currentGoalTime');
-    
-    if (progressBar && currentGoalTime) {
-        progressBar.style.width = `${Math.min(100, stats.goalProgress)}%`;
-        currentGoalTime.textContent = formatTimeDisplay(stats.totalToday);
-        
-        if (stats.goalProgress > 100) {
-            progressBar.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
-        } else if (stats.goalProgress > 80) {
-            progressBar.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
-        } else {
-            progressBar.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-        }
-    }
+    updatePersonalGoalsDisplay(stats);
 }
 
 function updateGoalDisplay() {
@@ -2149,3 +2172,88 @@ ${Object.entries(data.dailyHistory)
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
+
+// Gender selection functionality
+function initializeGenderSelection() {
+    const radioOptions = document.querySelectorAll('.radio-option');
+    const radioInputs = document.querySelectorAll('input[name="gender"]');
+    
+    // Add click handlers to radio option labels
+    radioOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove selected class from all options
+            radioOptions.forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selected class to clicked option
+            this.classList.add('selected');
+            
+            // Check the corresponding radio input
+            const input = this.querySelector('input[type="radio"]');
+            if (input) {
+                input.checked = true;
+            }
+        });
+    });
+    
+    // Set initial selected state based on checked radio
+    radioInputs.forEach(input => {
+        if (input.checked) {
+            const parentOption = input.closest('.radio-option');
+            if (parentOption) {
+                parentOption.classList.add('selected');
+            }
+        }
+    });
+}
+
+// Number input spinner functionality
+function incrementNumber(fieldId) {
+    const input = document.getElementById(fieldId);
+    const currentValue = parseFloat(input.value) || 0;
+    const step = parseFloat(input.step) || 1;
+    const max = parseFloat(input.max) || Infinity;
+    
+    const newValue = Math.min(currentValue + step, max);
+    input.value = newValue;
+    
+    // Trigger change event for real-time validation
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    
+    // Update BMI if it's height or weight
+    if (fieldId === 'height' || fieldId === 'weight') {
+        validateBMIRealTime();
+    }
+}
+
+function decrementNumber(fieldId) {
+    const input = document.getElementById(fieldId);
+    const currentValue = parseFloat(input.value) || 0;
+    const step = parseFloat(input.step) || 1;
+    const min = parseFloat(input.min) || -Infinity;
+    
+    const newValue = Math.max(currentValue - step, min);
+    input.value = newValue;
+    
+    // Trigger change event for real-time validation
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    
+    // Update BMI if it's height or weight
+    if (fieldId === 'height' || fieldId === 'weight') {
+        validateBMIRealTime();
+    }
+}
+
+// Enhanced initialization
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Enhanced app initializing...');
+    
+    // Initialize gender selection if on profile page
+    if (document.querySelector('.radio-option')) {
+        initializeGenderSelection();
+    }
+    
+    // Original initialization
+    if (typeof initializeApp === 'function') {
+        initializeApp();
+    }
+});

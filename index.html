@@ -223,6 +223,68 @@
             background: #fef2f2;
         }
 
+        /* Enhanced Number Input Spinner Buttons (2x larger) */
+        .form-input[type="number"] {
+            position: relative;
+        }
+
+        .form-input[type="number"]::-webkit-outer-spin-button,
+        .form-input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Custom spinner buttons - 2x larger */
+        .form-input[type="number"] {
+            -moz-appearance: textfield;
+            padding-right: 50px; /* Space for custom buttons */
+        }
+
+        /* Custom number input wrapper */
+        .number-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .number-input-wrapper .spinner-buttons {
+            position: absolute;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .number-input-wrapper .spinner-btn {
+            width: 40px;
+            height: 24px;
+            border: 1px solid #d1d5db;
+            background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #374151;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .number-input-wrapper .spinner-btn:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .number-input-wrapper .spinner-btn:active {
+            transform: scale(0.95);
+        }
+
         /* Radio buttons for gender */
         .radio-group {
             display: flex;
@@ -240,6 +302,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             background: white;
+            position: relative;
         }
 
         .radio-option:hover {
@@ -249,13 +312,24 @@
 
         .radio-option.selected {
             border-color: #667eea;
-            background: #eef2ff;
+            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
             color: #667eea;
             font-weight: 600;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
         }
 
         .radio-option input[type="radio"] {
             display: none;
+        }
+
+        /* Show selected state with checkmark */
+        .radio-option.selected::after {
+            content: '✓';
+            position: absolute;
+            right: 8px;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2rem;
         }
 
         /* BMI Display */
@@ -480,21 +554,39 @@
                         <!-- Age Input -->
                         <div class="form-group">
                             <label for="age" class="form-label" data-translate="age">Age (years)</label>
-                            <input type="number" id="age" name="age" class="form-input" min="18" max="100" value="30" required>
+                            <div class="number-input-wrapper">
+                                <input type="number" id="age" name="age" class="form-input" min="18" max="100" value="30" required>
+                                <div class="spinner-buttons">
+                                    <div class="spinner-btn" onclick="incrementNumber('age')">▲</div>
+                                    <div class="spinner-btn" onclick="decrementNumber('age')">▼</div>
+                                </div>
+                            </div>
                             <div id="ageError" class="validation-message error" style="display: none;"></div>
                         </div>
 
                         <!-- Height Input -->
                         <div class="form-group">
                             <label for="height" class="form-label" data-translate="height">Height (cm)</label>
-                            <input type="number" id="height" name="height" class="form-input" min="140" max="220" value="170" required>
+                            <div class="number-input-wrapper">
+                                <input type="number" id="height" name="height" class="form-input" min="140" max="220" value="170" required>
+                                <div class="spinner-buttons">
+                                    <div class="spinner-btn" onclick="incrementNumber('height')">▲</div>
+                                    <div class="spinner-btn" onclick="decrementNumber('height')">▼</div>
+                                </div>
+                            </div>
                             <div id="heightError" class="validation-message error" style="display: none;"></div>
                         </div>
 
                         <!-- Weight Input -->
                         <div class="form-group">
                             <label for="weight" class="form-label" data-translate="weight">Weight (kg)</label>
-                            <input type="number" id="weight" name="weight" class="form-input" min="40" max="200" step="0.1" value="70" required>
+                            <div class="number-input-wrapper">
+                                <input type="number" id="weight" name="weight" class="form-input" min="40" max="200" step="0.1" value="70" required>
+                                <div class="spinner-buttons">
+                                    <div class="spinner-btn" onclick="incrementNumber('weight')">▲</div>
+                                    <div class="spinner-btn" onclick="decrementNumber('weight')">▼</div>
+                                </div>
+                            </div>
                             <div id="weightError" class="validation-message error" style="display: none;"></div>
                         </div>
                     </div>
