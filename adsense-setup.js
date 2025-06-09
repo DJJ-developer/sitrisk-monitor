@@ -82,7 +82,7 @@ function loadBottomBannerAd() {
         `;
         
         try {
-            (adsbygoogle = window.adsbygoogle || []).push({});
+        (adsbygoogle = window.adsbygoogle || []).push({});
         } catch (e) {
             console.error('Error loading bottom banner ad:', e);
         }

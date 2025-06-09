@@ -838,6 +838,11 @@ function updateTimer() {
         // Update total time display in real-time
         updateRealTimeTotalDisplay();
         
+        // Update statistics for real-time timer synchronization
+        if (typeof updateStatistics === 'function') {
+            updateStatistics();
+        }
+        
         const minutes = Math.floor(currentTime / 60000);
         if (minutes > 0 && minutes % 30 === 0 && currentTime % 60000 < 1000) {
             showBreakAlert(minutes);
@@ -1595,14 +1600,14 @@ function initializeStatistics() {
     updateStatistics();
     createCharts();
     
-    // Update statistics every 30 seconds
+    // Update statistics every 5 seconds for real-time responsiveness
     setInterval(() => {
         updateStatistics();
         updateGoalProgress();
         if (chartInstances.time) {
             createTimeDistributionChart();
         }
-    }, 30000);
+    }, 5000);
 }
 
 function updateStatistics() {
@@ -1612,7 +1617,7 @@ function updateStatistics() {
     const elements = {
         'totalTimeToday': formatTimeDisplay(stats.totalToday),
         'averageDaily': formatTimeDisplay(stats.averageDaily),
-        'goalProgress': `${stats.goalProgress}%`,
+        'goalProgress': `${stats.goalProgress.toFixed(2)}%`,
         'currentStreak': stats.streak
     };
     

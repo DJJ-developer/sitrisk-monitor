@@ -451,18 +451,18 @@
             }
             
             .chart-container {
-                height: 70px;
-                padding: 0.25rem;
+                height: 120px;
+                padding: 0.5rem;
             }
             
             .chart-container canvas {
-                max-height: 40px !important;
-                height: 40px !important;
+                max-height: 90px !important;
+                height: 90px !important;
             }
             
             .chart-container h3 {
-                font-size: 0.7rem !important;
-                margin-bottom: 0.1rem !important;
+                font-size: 0.8rem !important;
+                margin-bottom: 0.25rem !important;
             }
             
             .stats-grid {
@@ -514,23 +514,23 @@
 
         .chart-container {
             background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            border-radius: 8px;
-            padding: 0.5rem;
+            border-radius: 12px;
+            padding: 0.75rem;
             border: 1px solid #e2e8f0;
-            height: 80px;
+            height: 130px;
             display: flex;
             flex-direction: column;
         }
         
         .chart-container canvas {
-            max-height: 50px !important;
-            height: 50px !important;
+            max-height: 100px !important;
+            height: 100px !important;
             flex: 1;
         }
         
         .chart-container h3 {
-            font-size: 0.8rem !important;
-            margin-bottom: 0.25rem !important;
+            font-size: 0.9rem !important;
+            margin-bottom: 0.5rem !important;
             font-weight: 600;
         }
 
@@ -706,8 +706,8 @@
         }
         
         .dark-mode .chart-container canvas {
-            max-height: 50px !important;
-            height: 50px !important;
+            max-height: 100px !important;
+            height: 100px !important;
         }
 
         .dark-mode .stat-value {
@@ -963,6 +963,45 @@
                 </div>
             </div>
 
+            <!-- Real-time Risk Assessment Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Real-time Health Risk Assessment</h2>
+                        <p class="card-subtitle">Live monitoring of sitting-related health risks</p>
+                    </div>
+                </div>
+
+                <div class="risk-grid" id="riskDisplay">
+                    <div class="risk-card">
+                        <div class="risk-title">❤️ Cardiovascular Disease</div>
+                        <div class="risk-percentage risk-low" id="cardioRisk">+0%</div>
+                        <div class="risk-description">Normal circulation and heart activity</div>
+                    </div>
+                    
+                    <div class="risk-card">
+                        <div class="risk-title">🩺 Type 2 Diabetes</div>
+                        <div class="risk-percentage risk-low" id="diabetesRisk">+0%</div>
+                        <div class="risk-description">Optimal insulin sensitivity</div>
+                    </div>
+                    
+                    <div class="risk-card">
+                        <div class="risk-title">🦴 Back Pain & Posture</div>
+                        <div class="risk-percentage risk-low" id="backRisk">+0%</div>
+                        <div class="risk-description">Good spinal alignment</div>
+                    </div>
+                    
+                    <div class="risk-card">
+                        <div class="risk-title">⚖️ Weight Gain & Obesity</div>
+                        <div class="risk-percentage risk-low" id="obesityRisk">+0%</div>
+                        <div class="risk-description">Normal metabolic activity</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Statistics & Analytics Card -->
             <div class="card">
                 <div class="card-header">
@@ -1101,45 +1140,6 @@
                 </div>
             </div>
 
-            <!-- Real-time Risk Assessment Card -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div>
-                        <h2 class="card-title">Real-time Health Risk Assessment</h2>
-                        <p class="card-subtitle">Live monitoring of sitting-related health risks</p>
-                    </div>
-                </div>
-
-                <div class="risk-grid" id="riskDisplay">
-                    <div class="risk-card">
-                        <div class="risk-title">❤️ Cardiovascular Disease</div>
-                        <div class="risk-percentage risk-low" id="cardioRisk">+0%</div>
-                        <div class="risk-description">Normal circulation and heart activity</div>
-                    </div>
-                    
-                    <div class="risk-card">
-                        <div class="risk-title">🩺 Type 2 Diabetes</div>
-                        <div class="risk-percentage risk-low" id="diabetesRisk">+0%</div>
-                        <div class="risk-description">Optimal insulin sensitivity</div>
-                    </div>
-                    
-                    <div class="risk-card">
-                        <div class="risk-title">🦴 Back Pain & Posture</div>
-                        <div class="risk-percentage risk-low" id="backRisk">+0%</div>
-                        <div class="risk-description">Good spinal alignment</div>
-                    </div>
-                    
-                    <div class="risk-card">
-                        <div class="risk-title">⚖️ Weight Gain & Obesity</div>
-                        <div class="risk-percentage risk-low" id="obesityRisk">+0%</div>
-                        <div class="risk-description">Normal metabolic activity</div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Real AdSense Ad Space -->
             <div id="middle-ad-banner">
                 <!-- AdSense ad will be inserted here -->
@@ -1259,47 +1259,7 @@
                 </div>
             </div>
 
-            <!-- Health Recommendations Card -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    <div>
-                        <h2 class="card-title">Health Recommendations</h2>
-                        <p class="card-subtitle">Personalized tips to reduce sitting risks</p>
-                    </div>
-                </div>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-                    <!-- Standing Desk Recommendation -->
-                    <div style="background: linear-gradient(135deg, #fefce8, #fef3c7); padding: 1.5rem; border-radius: 16px; border: 2px solid #fbbf24;">
-                        <h3 style="color: #d97706; margin-bottom: 1rem; font-size: 1.2rem;">🪑 Standing Desk Solution</h3>
-                        <p style="color: #92400e; line-height: 1.6; margin-bottom: 1rem;">Switch between sitting and standing every 30-60 minutes to reduce health risks by up to 40%.</p>
-                        <a href="#" onclick="trackAffiliateClick('standing-desk-main')" style="background: #f59e0b; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
-                            FlexiDesk Pro - $899 →
-                        </a>
-                    </div>
-                    
-                    <!-- Ergonomic Chair -->
-                    <div style="background: linear-gradient(135deg, #f0f9ff, #dbeafe); padding: 1.5rem; border-radius: 16px; border: 2px solid #60a5fa;">
-                        <h3 style="color: #1d4ed8; margin-bottom: 1rem; font-size: 1.2rem;">💺 Ergonomic Seating</h3>
-                        <p style="color: #1e3a8a; line-height: 1.6; margin-bottom: 1rem;">Proper lumbar support reduces back pain risk by 65% and improves posture.</p>
-                        <a href="#" onclick="trackAffiliateClick('ergonomic-chair')" style="background: #3b82f6; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
-                            ErgoChair Elite - $1,299 →
-                        </a>
-                    </div>
-                    
-                    <!-- Health Supplements -->
-                    <div style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); padding: 1.5rem; border-radius: 16px; border: 2px solid #4ade80;">
-                        <h3 style="color: #059669; margin-bottom: 1rem; font-size: 1.2rem;">💊 Metabolic Support</h3>
-                        <p style="color: #065f46; line-height: 1.6; margin-bottom: 1rem;">Specialized supplements to support metabolism and circulation for desk workers.</p>
-                        <a href="#" onclick="trackAffiliateClick('health-supplements')" style="background: #10b981; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
-                            DeskWorker Vitality Pack - $49 →
-                        </a>
-                    </div>
-                </div>
-            </div>
 
             <!-- Real AdSense Ad Space -->
             <div id="bottom-ad-banner">
