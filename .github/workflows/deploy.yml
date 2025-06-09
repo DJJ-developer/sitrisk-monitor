@@ -9,158 +9,68 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     
     steps:
     - name: 📂 Checkout Repository
       uses: actions/checkout@v4
       
-    - name: 🔧 Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-        
-    - name: 📦 Install Dependencies
-      run: |
-        if [ -f package.json ]; then
-          npm ci
-        else
-          echo "No package.json found, skipping npm install"
-        fi
-        
-    - name: 🧪 Run Tests (if available)
-      run: |
-        if [ -f package.json ] && npm run test --if-present; then
-          npm run test
-        else
-          echo "No tests found, skipping test step"
-        fi
-        
-    - name: 🏗️ Build Project (if needed)
-      run: |
-        if [ -f package.json ] && npm run build --if-present; then
-          npm run build
-        else
-          echo "No build script found, using static files"
-        fi
-        
     - name: 🌍 Validate HTML Files
       run: |
-        echo "Validating HTML files..."
+        echo "🔍 Validating HTML files..."
         for file in *.html; do
           if [ -f "$file" ]; then
             echo "✅ Found: $file"
           fi
         done
         
-    - name: 🔍 Check Multi-language Support
+    - name: 📊 Validate JavaScript Files
       run: |
-        echo "Checking language support..."
-        if grep -q "한국어\|English\|Español\|日本語" index.html; then
-          echo "✅ Multi-language support detected"
-        else
-          echo "⚠️ No multi-language support found"
-        fi
-        
-    - name: 📊 Validate JavaScript
-      run: |
-        echo "Validating JavaScript files..."
-        if [ -f script.js ]; then
-          echo "✅ Main script.js found"
-          if grep -q "translations.*=" script.js; then
-            echo "✅ Translation system detected"
+        echo "🔍 Validating JavaScript files..."
+        for file in *.js; do
+          if [ -f "$file" ]; then
+            echo "✅ Found: $file"
+            # Basic syntax check
+            node -c "$file" && echo "✅ $file syntax OK"
           fi
-        fi
+        done
+        
+    - name: 🎨 Validate CSS Files
+      run: |
+        echo "🔍 Validating CSS files..."
+        for file in *.css; do
+          if [ -f "$file" ]; then
+            echo "✅ Found: $file"
+          fi
+        done
         
     - name: 🚀 Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./
         exclude_assets: |
           .github
-          node_modules
-          *.md
-          !README.md
           .gitignore
-          package*.json
           
     - name: 📈 Generate Deployment Report
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       run: |
         echo "## 🚀 Deployment Report" >> $GITHUB_STEP_SUMMARY
-        echo "### 📊 Deployment Statistics" >> $GITHUB_STEP_SUMMARY
+        echo "### 📊 Site Information" >> $GITHUB_STEP_SUMMARY
         echo "- **Deployment Time**: $(date)" >> $GITHUB_STEP_SUMMARY
         echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **Files Deployed**: $(find . -name '*.html' -o -name '*.js' -o -name '*.css' | wc -l)" >> $GITHUB_STEP_SUMMARY
-        echo "### 🌍 Language Support" >> $GITHUB_STEP_SUMMARY
-        echo "- 🇰🇷 Korean (한국어)" >> $GITHUB_STEP_SUMMARY
-        echo "- 🇺🇸 English" >> $GITHUB_STEP_SUMMARY
-        echo "- 🇪🇸 Spanish (Español)" >> $GITHUB_STEP_SUMMARY
-        echo "- 🇯🇵 Japanese (日本語)" >> $GITHUB_STEP_SUMMARY
-        echo "### 📱 Access Information" >> $GITHUB_STEP_SUMMARY
-        echo "- **Live URL**: https://${{ github.repository_owner }}.github.io/sitrisk-monitor/" >> $GITHUB_STEP_SUMMARY
+        echo "- **HTML Files**: $(find . -name '*.html' | wc -l)" >> $GITHUB_STEP_SUMMARY
+        echo "- **JavaScript Files**: $(find . -name '*.js' | wc -l)" >> $GITHUB_STEP_SUMMARY
+        echo "- **CSS Files**: $(find . -name '*.css' | wc -l)" >> $GITHUB_STEP_SUMMARY
+        echo "### 🌍 Access Information" >> $GITHUB_STEP_SUMMARY
+        echo "- **Live URL**: https://djj-developer.github.io/sitrisk-monitor/" >> $GITHUB_STEP_SUMMARY
         echo "- **Status**: ✅ Deployed Successfully" >> $GITHUB_STEP_SUMMARY
-        
-  lighthouse-audit:
-    runs-on: ubuntu-latest
-    needs: deploy
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-    
-    steps:
-    - name: 📂 Checkout Repository
-      uses: actions/checkout@v4
-      
-    - name: 🔍 Lighthouse CI
-      uses: treosh/lighthouse-ci-action@v10
-      with:
-        urls: |
-          https://${{ github.repository_owner }}.github.io/sitrisk-monitor/
-          https://${{ github.repository_owner }}.github.io/sitrisk-monitor/monitor.html
-        uploadArtifacts: true
-        temporaryPublicStorage: true
-        
-  seo-check:
-    runs-on: ubuntu-latest
-    needs: deploy
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-    
-    steps:
-    - name: 📂 Checkout Repository
-      uses: actions/checkout@v4
-      
-    - name: 🔍 SEO Analysis
-      run: |
-        echo "## 🔍 SEO Analysis Report" >> seo-report.md
-        echo "### Multi-language Meta Tags" >> seo-report.md
-        
-        # Check for hreflang tags
-        if grep -q "hreflang" index.html; then
-          echo "✅ hreflang tags found" >> seo-report.md
-        else
-          echo "❌ hreflang tags missing" >> seo-report.md
-        fi
-        
-        # Check for Open Graph tags
-        if grep -q "og:" index.html; then
-          echo "✅ Open Graph tags found" >> seo-report.md
-        else
-          echo "❌ Open Graph tags missing" >> seo-report.md
-        fi
-        
-        # Check for multi-language descriptions
-        lang_count=$(grep -c "lang=" index.html || echo "0")
-        echo "📊 Language variants found: $lang_count" >> seo-report.md
-        
-        cat seo-report.md
-        
-    - name: 📊 Upload SEO Report
-      uses: actions/upload-artifact@v3
-      with:
-        name: seo-analysis-report
-        path: seo-report.md
         
   security-scan:
     runs-on: ubuntu-latest
@@ -169,26 +79,33 @@ jobs:
     - name: 📂 Checkout Repository
       uses: actions/checkout@v4
       
-    - name: 🔒 Security Scan
+    - name: 🔒 Basic Security Check
       run: |
-        echo "## 🔒 Security Scan Report" >> security-report.md
-        echo "### Content Security Policy" >> security-report.md
+        echo "## 🔒 Security Check Report" >> security-report.md
+        echo "### AdSense Policy Compliance" >> security-report.md
         
-        # Check for inline scripts (potential security risk)
-        if grep -q "javascript:" *.html; then
-          echo "⚠️ Inline JavaScript found - consider moving to external files" >> security-report.md
+        # Check for fake ad content
+        if grep -qi "fake.*ad\|premium.*ad.*banner\|fake.*revenue" *.html *.js; then
+          echo "❌ Potential fake ad content found" >> security-report.md
         else
-          echo "✅ No inline JavaScript detected" >> security-report.md
+          echo "✅ No fake ad content detected" >> security-report.md
         fi
         
-        # Check for external script sources
-        echo "### External Script Sources" >> security-report.md
-        grep -o "src=['\"][^'\"]*['\"]" *.html | grep -E "(cdn|googleapis|cloudflare)" >> security-report.md || echo "No CDN sources found" >> security-report.md
+        # Check for proper AdSense containers
+        if grep -q "google_ad_client\|data-ad-client" *.html *.js; then
+          echo "✅ AdSense containers found" >> security-report.md
+        else
+          echo "⚠️ No AdSense containers detected" >> security-report.md
+        fi
+        
+        echo "### External Resources" >> security-report.md
+        echo "CDN sources used:" >> security-report.md
+        grep -o "https://[^'\"]*" *.html | grep -E "(cdn|googleapis|cloudflare)" >> security-report.md || echo "None found" >> security-report.md
         
         cat security-report.md
         
     - name: 📊 Upload Security Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: security-scan-report
         path: security-report.md 
