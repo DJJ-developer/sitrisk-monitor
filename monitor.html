@@ -451,12 +451,18 @@
             }
             
             .chart-container {
-                height: 300px;
-                padding: 1rem;
+                height: 70px;
+                padding: 0.25rem;
             }
             
             .chart-container canvas {
-                max-height: 200px !important;
+                max-height: 40px !important;
+                height: 40px !important;
+            }
+            
+            .chart-container h3 {
+                font-size: 0.7rem !important;
+                margin-bottom: 0.1rem !important;
             }
             
             .stats-grid {
@@ -508,17 +514,24 @@
 
         .chart-container {
             background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            border-radius: 16px;
-            padding: 1.5rem;
-            border: 2px solid #e2e8f0;
-            height: 350px;
+            border-radius: 8px;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            height: 80px;
             display: flex;
             flex-direction: column;
         }
         
         .chart-container canvas {
-            max-height: 250px !important;
+            max-height: 50px !important;
+            height: 50px !important;
             flex: 1;
+        }
+        
+        .chart-container h3 {
+            font-size: 0.8rem !important;
+            margin-bottom: 0.25rem !important;
+            font-weight: 600;
         }
 
         .period-btn {
@@ -693,7 +706,8 @@
         }
         
         .dark-mode .chart-container canvas {
-            max-height: 250px !important;
+            max-height: 50px !important;
+            height: 50px !important;
         }
 
         .dark-mode .stat-value {
@@ -999,13 +1013,13 @@
                 </div>
 
                 <!-- Charts Container -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1rem 0;">
                     <div class="chart-container">
-                        <h3 style="text-align: center; color: #1e293b; margin-bottom: 1rem;">📊 Sitting Time Trend</h3>
+                        <h3 style="text-align: center; color: #1e293b;">📊 Daily Trend</h3>
                         <canvas id="trendChart"></canvas>
                     </div>
                     <div class="chart-container">
-                        <h3 style="text-align: center; color: #1e293b; margin-bottom: 1rem;">🕐 Time Distribution</h3>
+                        <h3 style="text-align: center; color: #1e293b;">🕐 Distribution</h3>
                         <canvas id="timeChart"></canvas>
                     </div>
                 </div>
@@ -1137,7 +1151,7 @@
                     <div class="card-icon" style="background: linear-gradient(135deg, #22c55e, #16a34a);">
                         <i class="fas fa-dumbbell"></i>
                     </div>
-                    <div>
+                <div>
                         <h2 class="card-title">Desk Exercises & Stretching</h2>
                         <p class="card-subtitle">Quick exercises to do while working</p>
                     </div>
