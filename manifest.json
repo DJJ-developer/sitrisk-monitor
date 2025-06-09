@@ -1,0 +1,40 @@
+{
+  "name": "SitRisk Monitor - Workplace Health Tracker",
+  "short_name": "SitRisk Monitor",
+  "description": "Real-time monitoring of sitting health risks. Track cardiovascular disease, diabetes, back pain, and obesity risks as you work.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm-15 25c-2.8 0-5 2.2-5 5v15c0 2.8 2.2 5 5 5h5v20c0 2.8 2.2 5 5 5s5-2.2 5-5V60h10v20c0 2.8 2.2 5 5 5s5-2.2 5-5V60h5c2.8 0 5-2.2 5-5V40c0-2.8-2.2-5-5-5H35z' fill='%23667eea'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm-15 25c-2.8 0-5 2.2-5 5v15c0 2.8 2.2 5 5 5h5v20c0 2.8 2.2 5 5 5s5-2.2 5-5V60h10v20c0 2.8 2.2 5 5 5s5-2.2 5-5V60h5c2.8 0 5-2.2 5-5V40c0-2.8-2.2-5-5-5H35z' fill='%23667eea'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["health-fitness", "productivity", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='390' height='844' viewBox='0 0 390 844'%3E%3Crect width='390' height='844' fill='%23667eea'/%3E%3Ctext x='195' y='422' text-anchor='middle' fill='white' font-size='24'%3ESitRisk Monitor%3C/text%3E%3C/svg%3E",
+      "sizes": "390x844",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ],
+  "features": [
+    "Real-time health monitoring",
+    "Exercise timer and guides",
+    "Dark mode support",
+    "Offline functionality",
+    "Data export (CSV/PDF)",
+    "Multi-language support"
+  ]
+} 

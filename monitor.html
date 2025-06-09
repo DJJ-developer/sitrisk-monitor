@@ -12,6 +12,8 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -448,6 +450,320 @@
                 margin: 1rem 0;
             }
         }
+
+        /* Statistics and Charts */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: #cbd5e1;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .chart-container {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        .period-btn {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .period-btn:hover {
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+            transform: translateY(-1px);
+        }
+
+        .period-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Goal and Notification Settings */
+        .goal-display {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 2px solid #bbf7d0;
+        }
+
+        .goal-progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e5e7eb;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .goal-progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 6px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-option:hover {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+
+        .checkbox-option span {
+            color: #374151;
+            font-weight: 500;
+        }
+
+        /* Exercise and Health Section */
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .exercise-card {
+            background: linear-gradient(135deg, #fefce8, #fef3c7);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 2px solid #fbbf24;
+            transition: all 0.3s ease;
+        }
+
+        .exercise-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3);
+        }
+
+        .exercise-timer {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .timer-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .timer-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .timer-btn.pause {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .timer-btn.stop {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        /* Dark Mode Styles */
+        .dark-mode {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+        }
+
+        .dark-mode .card {
+            background: rgba(30, 41, 59, 0.95) !important;
+            color: #f1f5f9 !important;
+            border: 1px solid rgba(71, 85, 105, 0.3) !important;
+        }
+
+        .dark-mode .card-title {
+            color: #f1f5f9 !important;
+        }
+
+        .dark-mode .card-subtitle {
+            color: #94a3b8 !important;
+        }
+
+        .dark-mode .timer-display {
+            background: linear-gradient(135deg, #334155, #475569) !important;
+            color: #f1f5f9 !important;
+            border-color: #475569 !important;
+        }
+
+        .dark-mode .stat-card,
+        .dark-mode .risk-card,
+        .dark-mode .exercise-card,
+        .dark-mode .chart-container {
+            background: linear-gradient(135deg, #334155, #475569) !important;
+            color: #f1f5f9 !important;
+            border-color: #475569 !important;
+        }
+
+        .dark-mode .stat-value {
+            color: #f1f5f9 !important;
+        }
+
+        .dark-mode .stat-label {
+            color: #94a3b8 !important;
+        }
+
+        .dark-mode .risk-title {
+            color: #f1f5f9 !important;
+        }
+
+        .dark-mode .risk-description {
+            color: #94a3b8 !important;
+        }
+
+        .dark-mode .period-btn {
+            background: linear-gradient(135deg, #475569, #64748b) !important;
+            color: #f1f5f9 !important;
+            border-color: #64748b !important;
+        }
+
+        .dark-mode .period-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        }
+
+        .dark-mode .checkbox-option {
+            background: linear-gradient(135deg, #334155, #475569) !important;
+            color: #f1f5f9 !important;
+        }
+
+        .dark-mode .checkbox-option span {
+            color: #f1f5f9 !important;
+        }
+
+        .dark-mode .goal-display {
+            background: linear-gradient(135deg, #064e3b, #065f46) !important;
+            border-color: #059669 !important;
+        }
+
+        .dark-mode .exercise-timer {
+            background: linear-gradient(135deg, #064e3b, #065f46) !important;
+            border-color: #059669 !important;
+        }
+
+        .dark-mode .profile-info {
+            background: linear-gradient(135deg, #334155, #475569) !important;
+            border-color: #475569 !important;
+        }
+
+        .dark-mode .profile-value {
+            color: #f1f5f9 !important;
+        }
+
+        .dark-mode .profile-label {
+            color: #94a3b8 !important;
+        }
+
+        .dark-mode .total-time-display {
+            background: linear-gradient(135deg, #064e3b, #065f46) !important;
+            color: #f0fdf4 !important;
+            border-color: #059669 !important;
+        }
+
+        /* PWA Styles */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+        }
+
+        .install-prompt.show {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .install-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
     </style>
 
     <!-- Google Analytics -->
@@ -458,6 +774,13 @@
         gtag('js', new Date());
         gtag('config', 'GA_MEASUREMENT_ID');
     </script>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SitRisk Monitor">
     
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3615711537957949" crossorigin="anonymous"></script>
@@ -478,6 +801,11 @@
                     <a href="monitor.html" class="nav-link">Monitor</a>
                     <a href="privacy.html" class="nav-link">Privacy</a>
                     
+                    <!-- Dark Mode Toggle -->
+                    <button id="darkModeToggle" onclick="toggleDarkMode()" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 500; margin-right: 1rem;">
+                        <i class="fas fa-moon" id="darkModeIcon"></i>
+                    </button>
+                    
                     <!-- Language Selector -->
                     <div style="position: relative; display: inline-block;">
                         <button id="languageBtn" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 500;">
@@ -487,7 +815,7 @@
                             <div class="language-option" data-lang="ko" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500; border-bottom: 1px solid #f3f4f6;">🇰🇷 한국어</div>
                             <div class="language-option" data-lang="en" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500; border-bottom: 1px solid #f3f4f6;">🇺🇸 English</div>
                             <div class="language-option" data-lang="es" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500; border-bottom: 1px solid #f3f4f6;">🇪🇸 Español</div>
-                            <div class="language-option" data-lang="ja" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500;">🇯🇵 日本語</div>
+                            <div class="language-option" data-lang="ja" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500;">🇯🇵 日본語</div>
                         </div>
                     </div>
                 </nav>
@@ -595,6 +923,144 @@
                 </div>
             </div>
 
+            <!-- Statistics & Analytics Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Analytics & Statistics</h2>
+                        <p class="card-subtitle">Your sitting time trends and progress</p>
+                    </div>
+                </div>
+
+                <!-- Time Period Selector -->
+                <div style="display: flex; gap: 1rem; margin-bottom: 2rem; justify-content: center; flex-wrap: wrap;">
+                    <button class="period-btn active" onclick="switchPeriod('today')" id="btn-today">
+                        <i class="fas fa-calendar-day"></i> Today
+                    </button>
+                    <button class="period-btn" onclick="switchPeriod('week')" id="btn-week">
+                        <i class="fas fa-calendar-week"></i> This Week
+                    </button>
+                    <button class="period-btn" onclick="switchPeriod('month')" id="btn-month">
+                        <i class="fas fa-calendar-alt"></i> This Month
+                    </button>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-value" id="totalTimeToday">0h 0m</div>
+                        <div class="stat-label">Total Today</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-value" id="averageDaily">0h 0m</div>
+                        <div class="stat-label">Daily Average</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-value" id="goalProgress">0%</div>
+                        <div class="stat-label">Goal Progress</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-value" id="currentStreak">0</div>
+                        <div class="stat-label">Day Streak</div>
+                    </div>
+                </div>
+
+                <!-- Charts Container -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                    <div class="chart-container">
+                        <h3 style="text-align: center; color: #1e293b; margin-bottom: 1rem;">📊 Sitting Time Trend</h3>
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3 style="text-align: center; color: #1e293b; margin-bottom: 1rem;">🕐 Time Distribution</h3>
+                        <canvas id="timeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Download Reports -->
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button onclick="downloadReport('csv')" class="btn btn-secondary">
+                        <i class="fas fa-download"></i> Download CSV Report
+                    </button>
+                    <button onclick="downloadReport('pdf')" class="btn btn-secondary">
+                        <i class="fas fa-file-pdf"></i> Download PDF Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- Real AdSense Ad Space -->
+            <div id="middle-ad-banner">
+                <!-- AdSense ad will be inserted here -->
+            </div>
+
+            <!-- Goals & Personalization Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Personal Goals & Settings</h2>
+                        <p class="card-subtitle">Customize your health targets</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <!-- Goal Setting -->
+                    <div class="goal-section">
+                        <h3 style="color: #1e293b; margin-bottom: 1rem;">🎯 Daily Sitting Goal</h3>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; color: #64748b; margin-bottom: 0.5rem;">Maximum sitting time per day:</label>
+                            <input type="range" id="dailyGoal" min="2" max="12" value="8" onchange="updateGoal()" 
+                                   style="width: 100%; margin-bottom: 0.5rem;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: #64748b;">
+                                <span>2h</span>
+                                <span id="goalValue">8h</span>
+                                <span>12h</span>
+                            </div>
+                        </div>
+                        <div class="goal-display">
+                            <div class="goal-progress-bar">
+                                <div class="goal-progress-fill" id="goalProgressBar"></div>
+                            </div>
+                            <p style="text-align: center; margin-top: 0.5rem; color: #64748b;">
+                                Current: <span id="currentGoalTime">0h 0m</span> / <span id="targetGoalTime">8h 0m</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Smart Notifications -->
+                    <div class="notification-section">
+                        <h3 style="color: #1e293b; margin-bottom: 1rem;">🔔 Smart Notifications</h3>
+                        <div class="notification-options">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="notifyBreaks" checked onchange="updateNotificationSettings()">
+                                <span>Break reminders every 30 minutes</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="notifyGoal" checked onchange="updateNotificationSettings()">
+                                <span>Daily goal progress alerts</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="notifyHealth" checked onchange="updateNotificationSettings()">
+                                <span>Health risk warnings</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="notifyMotivation" onchange="updateNotificationSettings()">
+                                <span>Daily motivation messages</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Real-time Risk Assessment Card -->
             <div class="card">
                 <div class="card-header">
@@ -637,6 +1103,120 @@
             <!-- Real AdSense Ad Space -->
             <div id="middle-ad-banner">
                 <!-- AdSense ad will be inserted here -->
+            </div>
+
+            <!-- Desk Exercises & Stretching Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #22c55e, #16a34a);">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Desk Exercises & Stretching</h2>
+                        <p class="card-subtitle">Quick exercises to do while working</p>
+                    </div>
+                </div>
+
+                <!-- Exercise Timer -->
+                <div class="exercise-timer">
+                    <h3 style="color: #059669; margin-bottom: 1rem;">🕐 Exercise Timer</h3>
+                    <div style="font-size: 2rem; font-weight: 700; color: #1e293b; margin: 1rem 0;" id="exerciseTimer">05:00</div>
+                    <div class="timer-controls">
+                        <button class="timer-btn" onclick="startExerciseTimer()" id="startExerciseBtn">
+                            <i class="fas fa-play"></i> Start 5-min Break
+                        </button>
+                        <button class="timer-btn pause" onclick="pauseExerciseTimer()" id="pauseExerciseBtn" style="display: none;">
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                        <button class="timer-btn stop" onclick="stopExerciseTimer()" id="stopExerciseBtn">
+                            <i class="fas fa-stop"></i> Stop
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Exercise Grid -->
+                <div class="exercise-grid">
+                    <!-- Neck & Shoulder -->
+                    <div class="exercise-card">
+                        <h3 style="color: #d97706; margin-bottom: 1rem;">🦵 Neck & Shoulder Relief</h3>
+                        <div style="margin-bottom: 1rem;">
+                            <p><strong>1. Neck Rolls (30 seconds)</strong></p>
+                            <p style="color: #92400e; font-size: 0.9rem;">Slowly roll your head in circles, 5 times each direction</p>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <p><strong>2. Shoulder Shrugs (30 seconds)</strong></p>
+                            <p style="color: #92400e; font-size: 0.9rem;">Lift shoulders to ears, hold 3 seconds, release</p>
+                        </div>
+                        <div>
+                            <p><strong>3. Upper Trap Stretch (30 seconds)</strong></p>
+                            <p style="color: #92400e; font-size: 0.9rem;">Tilt head to side, hold opposite shoulder down</p>
+                        </div>
+                    </div>
+
+                    <!-- Back & Spine -->
+                    <div class="exercise-card">
+                        <h3 style="color: #d97706; margin-bottom: 1rem;">🦴 Back & Spine Stretch</h3>
+                        <div style="margin-bottom: 1rem;">
+                            <p><strong>1. Seated Spinal Twist (30 seconds)</strong></p>
+                            <p style="color: #92400e; font-size: 0.9rem;">Rotate upper body left and right, hold chair back</p>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <p><strong>2. Cat-Cow Stretch (30 seconds)</strong></p>
+                            <p style="color: #92400e; font-size: 0.9rem;">Arch and round your back alternately</p>
+                        </div>
+                        <div>
+                            <p><strong>3. Lower Back Extension (30 seconds)</strong></p>
+                            <p style="color: #92400e; font-size: 0.9rem;">Place hands on lower back, gently arch backward</p>
+                        </div>
+                    </div>
+
+                    <!-- Legs & Circulation -->
+                    <div class="exercise-card">
+                        <h3 style="color: #d97706; margin-bottom: 1rem;">🦵 Legs & Circulation</h3>
+                        <div style="margin-bottom: 1rem;">
+                            <p><strong>1. Ankle Circles (30 seconds)</strong></p>
+                            <p style="color: #92400e; font-size: 0.9rem;">Rotate feet clockwise and counterclockwise</p>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <p><strong>2. Calf Raises (30 seconds)</strong></p>
+                            <p style="color: #92400e; font-size: 0.9rem;">Rise up on toes, hold 2 seconds, lower</p>
+                        </div>
+                        <div>
+                            <p><strong>3. Seated Marching (30 seconds)</strong></p>
+                            <p style="color: #92400e; font-size: 0.9rem;">Lift knees alternately as if marching</p>
+                        </div>
+                    </div>
+
+                    <!-- Eye & Wrist Care -->
+                    <div class="exercise-card">
+                        <h3 style="color: #d97706; margin-bottom: 1rem;">👁️ Eye & Wrist Care</h3>
+                        <div style="margin-bottom: 1rem;">
+                            <p><strong>1. 20-20-20 Rule (1 minute)</strong></p>
+                            <p style="color: #92400e; font-size: 0.9rem;">Look at something 20 feet away for 20 seconds</p>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <p><strong>2. Wrist Circles (30 seconds)</strong></p>
+                            <p style="color: #92400e; font-size: 0.9rem;">Rotate wrists clockwise and counterclockwise</p>
+                        </div>
+                        <div>
+                            <p><strong>3. Finger Stretches (30 seconds)</strong></p>
+                            <p style="color: #92400e; font-size: 0.9rem;">Spread fingers wide, then make fists</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Action Buttons -->
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button onclick="showPostureReminder()" class="btn btn-secondary">
+                        <i class="fas fa-user-check"></i> Check Posture
+                    </button>
+                    <button onclick="showBreathingExercise()" class="btn btn-secondary">
+                        <i class="fas fa-wind"></i> Breathing Exercise
+                    </button>
+                    <button onclick="showEyeExercise()" class="btn btn-secondary">
+                        <i class="fas fa-eye"></i> Eye Relaxation
+                    </button>
+                </div>
             </div>
 
             <!-- Health Recommendations Card -->
@@ -709,6 +1289,18 @@
                     </p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- PWA Install Prompt -->
+    <div class="install-prompt" id="installPrompt">
+        <div>
+            <h4 style="margin: 0 0 0.5rem 0;">📱 Install SitRisk Monitor</h4>
+            <p style="margin: 0; font-size: 0.9rem;">Get easy access and offline features</p>
+        </div>
+        <div>
+            <button class="install-btn" onclick="installPWA()">Install</button>
+            <button class="install-btn" onclick="dismissInstallPrompt()" style="margin-left: 0.5rem;">Dismiss</button>
         </div>
     </div>
 

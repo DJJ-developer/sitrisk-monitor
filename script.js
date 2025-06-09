@@ -7,6 +7,21 @@ let lastBreakTime = 0;
 let currentLanguage = 'ko';
 let isTimerRunning = false;
 
+// New enhanced features
+let exerciseTimer = null;
+let exerciseTimeLeft = 300; // 5 minutes in seconds
+let isDarkMode = false;
+let chartInstances = {};
+let notificationSettings = {
+    breaks: true,
+    goals: true,
+    health: true,
+    motivation: false
+};
+let dailyGoal = 8; // hours
+let currentPeriod = 'today';
+let pwaInstallPrompt = null;
+
 // Total time tracking variables
 let totalSittingTime = {
     today: 0,
@@ -1551,8 +1566,581 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('  - 프로필:', userProfile);
         console.log('  - 총시간:', totalSittingTime);
         console.log('  - 언어:', currentLanguage);
+        
+        // 새로운 고급 기능들 초기화
+        initializeEnhancedFeatures();
     } else {
         // 기존 초기화 로직 (index.html용)
         initializeApp();
     }
-}); 
+});
+
+// ============= NEW ENHANCED FEATURES =============
+
+// Enhanced Features Initialization
+function initializeEnhancedFeatures() {
+    console.log('🚀 Enhanced features 초기화 시작...');
+    
+    initializeStatistics();
+    initializePWA();
+    loadDarkModePreference();
+    loadNotificationSettings();
+    updateGoalDisplay();
+    
+    console.log('✅ Enhanced features 초기화 완료!');
+}
+
+// Statistics and Analytics Functions
+function initializeStatistics() {
+    updateStatistics();
+    createCharts();
+    
+    // Update statistics every 30 seconds
+    setInterval(() => {
+        updateStatistics();
+        updateGoalProgress();
+        if (chartInstances.time) {
+            createTimeDistributionChart();
+        }
+    }, 30000);
+}
+
+function updateStatistics() {
+    // Update quick stats
+    const stats = calculateStatistics();
+    
+    const elements = {
+        'totalTimeToday': formatTimeDisplay(stats.totalToday),
+        'averageDaily': formatTimeDisplay(stats.averageDaily),
+        'goalProgress': `${stats.goalProgress}%`,
+        'currentStreak': stats.streak
+    };
+    
+    Object.entries(elements).forEach(([id, value]) => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value;
+    });
+}
+
+function calculateStatistics() {
+    const savedData = localStorage.getItem('totalSittingTime');
+    let data = { today: 0, thisWeek: 0, allTime: 0 };
+    
+    if (savedData) {
+        data = JSON.parse(savedData);
+    }
+    
+    const currentSessionMs = isTimerRunning ? currentTime * 1000 : 0;
+    const totalTodayMs = data.today + currentSessionMs;
+    
+    return {
+        totalToday: totalTodayMs,
+        averageDaily: data.thisWeek / 7,
+        goalProgress: Math.min(100, (totalTodayMs / (dailyGoal * 3600 * 1000)) * 100),
+        streak: calculateStreak()
+    };
+}
+
+function calculateStreak() {
+    const goalMs = dailyGoal * 3600 * 1000;
+    const historyKey = 'dailyGoalHistory';
+    const history = JSON.parse(localStorage.getItem(historyKey) || '{}');
+    
+    let streak = 0;
+    const today = new Date().toDateString();
+    const todayData = history[today] || 0;
+    
+    if (todayData < goalMs) {
+        streak = 1;
+        for (let i = 1; i < 30; i++) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            const dayKey = date.toDateString();
+            if (history[dayKey] && history[dayKey] < goalMs) {
+                streak++;
+            } else {
+                break;
+            }
+        }
+    }
+    
+    return streak;
+}
+
+function formatTimeDisplay(milliseconds) {
+    const hours = Math.floor(milliseconds / (1000 * 60 * 60));
+    const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours}h ${minutes}m`;
+}
+
+// Chart Functions
+function createCharts() {
+    createTrendChart();
+    createTimeDistributionChart();
+}
+
+function createTrendChart() {
+    const ctx = document.getElementById('trendChart');
+    if (!ctx) return;
+    
+    const data = getTrendData();
+    
+    if (chartInstances.trend) {
+        chartInstances.trend.destroy();
+    }
+    
+    chartInstances.trend = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: 'Daily Sitting Time (hours)',
+                data: data.values,
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 12,
+                    ticks: {
+                        callback: function(value) {
+                            return value + 'h';
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createTimeDistributionChart() {
+    const ctx = document.getElementById('timeChart');
+    if (!ctx) return;
+    
+    if (chartInstances.time) {
+        chartInstances.time.destroy();
+    }
+    
+    const currentHours = currentTime / 3600;
+    const activeHours = 2; // Assumed active time
+    const remainingHours = Math.max(0, dailyGoal - currentHours - activeHours);
+    
+    chartInstances.time = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Sitting', 'Active', 'Goal Remaining'],
+            datasets: [{
+                data: [currentHours, activeHours, remainingHours],
+                backgroundColor: ['#ef4444', '#10b981', '#e5e7eb'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+
+function getTrendData() {
+    const history = JSON.parse(localStorage.getItem('dailyGoalHistory') || '{}');
+    const labels = [];
+    const values = [];
+    
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dayKey = date.toDateString();
+        const shortDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        
+        labels.push(shortDate);
+        values.push((history[dayKey] || 0) / (1000 * 60 * 60));
+    }
+    
+    return { labels, values };
+}
+
+function switchPeriod(period) {
+    currentPeriod = period;
+    
+    document.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
+    const btn = document.getElementById(`btn-${period}`);
+    if (btn) btn.classList.add('active');
+    
+    updateStatistics();
+    createCharts();
+}
+
+// Goal and Notification Functions
+function updateGoal() {
+    const slider = document.getElementById('dailyGoal');
+    if (!slider) return;
+    
+    dailyGoal = parseInt(slider.value);
+    
+    const goalValue = document.getElementById('goalValue');
+    const targetGoalTime = document.getElementById('targetGoalTime');
+    
+    if (goalValue) goalValue.textContent = `${dailyGoal}h`;
+    if (targetGoalTime) targetGoalTime.textContent = `${dailyGoal}h 0m`;
+    
+    updateGoalProgress();
+    localStorage.setItem('dailyGoal', dailyGoal);
+}
+
+function updateGoalProgress() {
+    const stats = calculateStatistics();
+    const progressBar = document.getElementById('goalProgressBar');
+    const currentGoalTime = document.getElementById('currentGoalTime');
+    
+    if (progressBar && currentGoalTime) {
+        progressBar.style.width = `${Math.min(100, stats.goalProgress)}%`;
+        currentGoalTime.textContent = formatTimeDisplay(stats.totalToday);
+        
+        if (stats.goalProgress > 100) {
+            progressBar.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+        } else if (stats.goalProgress > 80) {
+            progressBar.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+        } else {
+            progressBar.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+        }
+    }
+}
+
+function updateGoalDisplay() {
+    const savedGoal = localStorage.getItem('dailyGoal');
+    if (savedGoal) {
+        dailyGoal = parseInt(savedGoal);
+        const slider = document.getElementById('dailyGoal');
+        if (slider) {
+            slider.value = dailyGoal;
+            updateGoal();
+        }
+    }
+}
+
+function updateNotificationSettings() {
+    const elements = ['notifyBreaks', 'notifyGoal', 'notifyHealth', 'notifyMotivation'];
+    const keys = ['breaks', 'goals', 'health', 'motivation'];
+    
+    elements.forEach((id, index) => {
+        const element = document.getElementById(id);
+        if (element) {
+            notificationSettings[keys[index]] = element.checked;
+        }
+    });
+    
+    localStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
+}
+
+function loadNotificationSettings() {
+    const saved = localStorage.getItem('notificationSettings');
+    if (saved) {
+        notificationSettings = { ...notificationSettings, ...JSON.parse(saved) };
+        
+        const mapping = {
+            'notifyBreaks': 'breaks',
+            'notifyGoal': 'goals', 
+            'notifyHealth': 'health',
+            'notifyMotivation': 'motivation'
+        };
+        
+        Object.entries(mapping).forEach(([id, key]) => {
+            const element = document.getElementById(id);
+            if (element) element.checked = notificationSettings[key];
+        });
+    }
+}
+
+// Exercise Timer Functions
+function startExerciseTimer() {
+    if (exerciseTimer) {
+        clearInterval(exerciseTimer);
+    }
+    
+    exerciseTimeLeft = 300;
+    const startBtn = document.getElementById('startExerciseBtn');
+    const pauseBtn = document.getElementById('pauseExerciseBtn');
+    
+    if (startBtn) startBtn.style.display = 'none';
+    if (pauseBtn) pauseBtn.style.display = 'inline-block';
+    
+    exerciseTimer = setInterval(() => {
+        exerciseTimeLeft--;
+        updateExerciseDisplay();
+        
+        if (exerciseTimeLeft <= 0) {
+            stopExerciseTimer();
+            showNotification('🎉 Exercise break completed! Great job!', 'success');
+        }
+    }, 1000);
+}
+
+function pauseExerciseTimer() {
+    if (exerciseTimer) {
+        clearInterval(exerciseTimer);
+        exerciseTimer = null;
+    }
+    
+    const startBtn = document.getElementById('startExerciseBtn');
+    const pauseBtn = document.getElementById('pauseExerciseBtn');
+    
+    if (startBtn) {
+        startBtn.style.display = 'inline-block';
+        startBtn.innerHTML = '<i class="fas fa-play"></i> Resume';
+    }
+    if (pauseBtn) pauseBtn.style.display = 'none';
+}
+
+function stopExerciseTimer() {
+    if (exerciseTimer) {
+        clearInterval(exerciseTimer);
+        exerciseTimer = null;
+    }
+    
+    exerciseTimeLeft = 300;
+    updateExerciseDisplay();
+    
+    const startBtn = document.getElementById('startExerciseBtn');
+    const pauseBtn = document.getElementById('pauseExerciseBtn');
+    
+    if (startBtn) {
+        startBtn.style.display = 'inline-block';
+        startBtn.innerHTML = '<i class="fas fa-play"></i> Start 5-min Break';
+    }
+    if (pauseBtn) pauseBtn.style.display = 'none';
+}
+
+function updateExerciseDisplay() {
+    const minutes = Math.floor(exerciseTimeLeft / 60);
+    const seconds = exerciseTimeLeft % 60;
+    const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
+    const timer = document.getElementById('exerciseTimer');
+    if (timer) timer.textContent = display;
+}
+
+// Quick Exercise Functions
+function showPostureReminder() {
+    const reminder = `
+        <div style="text-align: left; line-height: 1.6;">
+            <h4>🧘 Perfect Posture Checklist:</h4>
+            <ul style="margin: 1rem 0;">
+                <li>✅ Feet flat on the floor</li>
+                <li>✅ Back straight against chair</li>
+                <li>✅ Shoulders relaxed</li>
+                <li>✅ Screen at eye level</li>
+                <li>✅ Elbows at 90 degrees</li>
+            </ul>
+            <p><strong>Hold this position for better health!</strong></p>
+        </div>
+    `;
+    showAdvancedNotification('Posture Check', reminder, 'info', 8000);
+}
+
+function showBreathingExercise() {
+    let breathCount = 0;
+    const totalBreaths = 5;
+    
+    const breathingInterval = setInterval(() => {
+        if (breathCount < totalBreaths) {
+            showAdvancedNotification(
+                '🫁 Breathing Exercise', 
+                `Breath ${breathCount + 1}/${totalBreaths}: Inhale for 4 seconds, hold for 4, exhale for 4`, 
+                'info', 
+                4000
+            );
+            breathCount++;
+        } else {
+            clearInterval(breathingInterval);
+            showAdvancedNotification('✅ Breathing Complete', 'Great job! You should feel more relaxed now.', 'success', 3000);
+        }
+    }, 4000);
+}
+
+function showEyeExercise() {
+    const exercises = [
+        "👀 Look up and down slowly 5 times",
+        "👀 Look left and right slowly 5 times", 
+        "👀 Roll your eyes in circles 5 times",
+        "👀 Focus on something 20 feet away for 20 seconds",
+        "👀 Blink slowly 10 times"
+    ];
+    
+    exercises.forEach((exercise, index) => {
+        setTimeout(() => {
+            showAdvancedNotification('Eye Exercise', exercise, 'info', 5000);
+        }, index * 6000);
+    });
+}
+
+// Dark Mode Functions
+function toggleDarkMode() {
+    isDarkMode = !isDarkMode;
+    document.body.classList.toggle('dark-mode', isDarkMode);
+    
+    const icon = document.getElementById('darkModeIcon');
+    if (icon) {
+        icon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
+    }
+    
+    localStorage.setItem('darkMode', isDarkMode);
+    
+    setTimeout(() => {
+        createCharts();
+    }, 100);
+}
+
+function loadDarkModePreference() {
+    const saved = localStorage.getItem('darkMode');
+    if (saved === 'true') {
+        isDarkMode = true;
+        document.body.classList.add('dark-mode');
+        const icon = document.getElementById('darkModeIcon');
+        if (icon) icon.className = 'fas fa-sun';
+    }
+}
+
+// PWA Functions
+function initializePWA() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => console.log('SW registered'))
+            .catch(error => console.log('SW registration failed'));
+    }
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        pwaInstallPrompt = e;
+        showInstallPrompt();
+    });
+}
+
+function showInstallPrompt() {
+    const prompt = document.getElementById('installPrompt');
+    if (prompt && !localStorage.getItem('installPromptDismissed')) {
+        setTimeout(() => {
+            prompt.classList.add('show');
+        }, 5000);
+    }
+}
+
+function installPWA() {
+    if (pwaInstallPrompt) {
+        pwaInstallPrompt.prompt();
+        pwaInstallPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('PWA installed');
+            }
+            pwaInstallPrompt = null;
+            dismissInstallPrompt();
+        });
+    }
+}
+
+function dismissInstallPrompt() {
+    const prompt = document.getElementById('installPrompt');
+    if (prompt) {
+        prompt.classList.remove('show');
+        localStorage.setItem('installPromptDismissed', 'true');
+    }
+}
+
+// Report Download Functions
+function downloadReport(format) {
+    const data = generateReportData();
+    
+    if (format === 'csv') {
+        downloadCSV(data);
+    } else if (format === 'pdf') {
+        downloadPDF(data);
+    }
+}
+
+function generateReportData() {
+    const stats = calculateStatistics();
+    const history = JSON.parse(localStorage.getItem('dailyGoalHistory') || '{}');
+    
+    return {
+        profile: userProfile,
+        currentStats: stats,
+        dailyHistory: history,
+        goal: dailyGoal,
+        generatedAt: new Date().toISOString()
+    };
+}
+
+function downloadCSV(data) {
+    const headers = ['Date', 'Sitting Time (hours)', 'Goal Met'];
+    const rows = Object.entries(data.dailyHistory).map(([date, timeMs]) => [
+        date,
+        (timeMs / (1000 * 60 * 60)).toFixed(2),
+        timeMs < (dailyGoal * 3600 * 1000) ? 'Yes' : 'No'
+    ]);
+    
+    const csvContent = [headers, ...rows]
+        .map(row => row.join(','))
+        .join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sitrisk-report-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function downloadPDF(data) {
+    const content = `SitRisk Monitor - Health Report
+Generated: ${new Date().toLocaleDateString()}
+
+Profile Information:
+- Age: ${data.profile?.age || 'N/A'}
+- Gender: ${data.profile?.gender || 'N/A'}
+- BMI: ${data.profile ? calculateBMI(data.profile.weight, data.profile.height).toFixed(1) : 'N/A'}
+
+Current Statistics:
+- Today's Total: ${formatTimeDisplay(data.currentStats.totalToday)}
+- Daily Average: ${formatTimeDisplay(data.currentStats.averageDaily)}
+- Goal Progress: ${data.currentStats.goalProgress.toFixed(1)}%
+- Current Streak: ${data.currentStats.streak} days
+
+Daily Goal: ${data.goal} hours
+
+Recent History:
+${Object.entries(data.dailyHistory)
+    .slice(-7)
+    .map(([date, timeMs]) => `${date}: ${(timeMs / (1000 * 60 * 60)).toFixed(1)}h`)
+    .join('\n')}`;
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sitrisk-report-${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
