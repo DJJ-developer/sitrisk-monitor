@@ -1,0 +1,30 @@
+{
+  "name": "sitrisk-monitor",
+  "version": "1.0.0",
+  "description": "실시간 앉기 위험도 모니터링 서비스",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000",
+    "build": "echo 'No build process needed'",
+    "deploy": "netlify deploy --prod"
+  },
+  "keywords": [
+    "sitting",
+    "health",
+    "risk",
+    "monitoring",
+    "wellness",
+    "office",
+    "ergonomics"
+  ],
+  "author": "SitRisk Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/sitrisk-monitor"
+  },
+  "homepage": "https://sitrisk-monitor.netlify.app",
+  "devDependencies": {},
+  "dependencies": {}
+} 

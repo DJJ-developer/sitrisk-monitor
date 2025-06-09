@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Health Risk Monitor - SitRisk Monitor</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Real-time monitoring of sitting health risks. Track cardiovascular disease, diabetes, back pain, and obesity risks as you work.">
+    <meta name="keywords" content="real-time health monitoring, sitting risks, desk job health tracker, cardiovascular disease monitor, diabetes prevention">
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1rem 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .card-subtitle {
+            color: #64748b;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        /* Timer Display */
+        .timer-display {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 2px solid #e2e8f0;
+            text-align: center;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .timer-status {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .status-active {
+            color: #ef4444;
+        }
+
+        .status-paused {
+            color: #f59e0b;
+        }
+
+        .status-stopped {
+            color: #6b7280;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            justify-content: center;
+            margin: 0 0.5rem 0.5rem 0;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
+        }
+
+        .btn-pause {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-pause:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6);
+        }
+
+        .btn-stop {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-stop:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.6);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.4);
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(107, 114, 128, 0.6);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Risk Display */
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .risk-card {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .risk-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .risk-percentage {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 1rem 0;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .risk-low { 
+            background: linear-gradient(135deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .risk-medium { 
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .risk-high { 
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .risk-critical { 
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .risk-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-description {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Profile Display */
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .profile-item {
+            text-align: center;
+        }
+
+        .profile-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        /* Standing Desk Alert */
+        .standing-alert {
+            background: linear-gradient(135deg, #fefce8, #fef3c7);
+            border: 2px solid #fbbf24;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            animation: gentle-pulse 2s infinite;
+        }
+
+        @keyframes gentle-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .standing-alert h3 {
+            color: #d97706;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .standing-alert p {
+            color: #92400e;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Total Time Display */
+        .total-time-display {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #059669;
+            text-align: center;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            border: 2px solid #bbf7d0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+                margin: 0.5rem 0;
+            }
+            
+            .card-title {
+                font-size: 1.5rem;
+            }
+            
+            .timer-display {
+                font-size: 3rem;
+                padding: 1.5rem;
+            }
+            
+            .risk-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .profile-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+        }
+
+        /* AdSense Ad Containers */
+        #top-ad-banner, #middle-ad-banner, #bottom-ad-banner {
+            margin: 2rem 0;
+            text-align: center;
+            min-height: 100px;
+        }
+
+        @media (max-width: 768px) {
+            #top-ad-banner, #middle-ad-banner, #bottom-ad-banner {
+                margin: 1rem 0;
+            }
+        }
+    </style>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3615711537957949" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Modern Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <span>SitRisk Monitor</span>
+                </div>
+                <nav class="nav-links">
+                    <a href="index.html" class="nav-link">Profile Setup</a>
+                    <a href="monitor.html" class="nav-link">Monitor</a>
+                    <a href="privacy.html" class="nav-link">Privacy</a>
+                    
+                    <!-- Language Selector -->
+                    <div style="position: relative; display: inline-block;">
+                        <button id="languageBtn" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                            <i class="fas fa-globe"></i> <span id="currentLang">한국어</span> <i class="fas fa-chevron-down" style="margin-left: 8px;"></i>
+                        </button>
+                        <div id="languageDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 120px; z-index: 1000; margin-top: 4px;">
+                            <div class="language-option" data-lang="ko" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500; border-bottom: 1px solid #f3f4f6;">🇰🇷 한국어</div>
+                            <div class="language-option" data-lang="en" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500; border-bottom: 1px solid #f3f4f6;">🇺🇸 English</div>
+                            <div class="language-option" data-lang="es" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500; border-bottom: 1px solid #f3f4f6;">🇪🇸 Español</div>
+                            <div class="language-option" data-lang="ja" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500;">🇯🇵 日本語</div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Real AdSense Ad Space -->
+            <div id="top-ad-banner">
+                <!-- AdSense ad will be inserted here -->
+            </div>
+
+            <!-- Profile Information Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Profile Information</h2>
+                        <p class="card-subtitle">Your health profile for risk calculation</p>
+                    </div>
+                </div>
+
+                <div class="profile-info" id="profileDisplay">
+                    <div class="profile-item">
+                        <div class="profile-label">Gender</div>
+                        <div class="profile-value" id="displayGender">Male</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Age</div>
+                        <div class="profile-value" id="displayAge">30 years</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Height</div>
+                        <div class="profile-value" id="displayHeight">170 cm</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Weight</div>
+                        <div class="profile-value" id="displayWeight">70 kg</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">BMI</div>
+                        <div class="profile-value" id="displayBMI">24.2</div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="index.html" class="btn btn-secondary">
+                        <i class="fas fa-edit"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Timer Control Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                        <i class="fas fa-stopwatch"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Sitting Timer</h2>
+                        <p class="card-subtitle">Track your sitting time in real-time</p>
+                    </div>
+                </div>
+
+                <div class="timer-status" id="timerStatus">Ready to Start</div>
+                <div class="timer-display" id="timerDisplay">00:00:00</div>
+                
+                <div style="text-align: center; margin: 1.5rem 0;">
+                    <button id="startBtn" class="btn btn-start">
+                        <i class="fas fa-play"></i>
+                        <span>Start Timer</span>
+                    </button>
+                    <button id="pauseBtn" class="btn btn-pause" style="display: none;">
+                        <i class="fas fa-pause"></i>
+                        <span>Pause</span>
+                    </button>
+                    <button id="stopBtn" class="btn btn-stop">
+                        <i class="fas fa-stop"></i>
+                        <span>Stop</span>
+                    </button>
+                    <button id="resetBtn" class="btn btn-reset">
+                        <i class="fas fa-redo"></i>
+                        <span>Reset</span>
+                    </button>
+                </div>
+
+                <!-- Total Sitting Time Display -->
+                <div class="total-time-display" id="totalTimeDisplay">
+                    Total Today: 00:00:00
+                </div>
+            </div>
+
+            <!-- Standing Desk Alert (appears after 30+ minutes) -->
+            <div class="standing-alert" id="standingAlert" style="display: none;">
+                <h3>⏰ Time to Stand!</h3>
+                <p>You've been sitting for over 30 minutes. Consider standing or taking a brief walk to reduce health risks.</p>
+                <div style="margin-top: 1rem;">
+                    <strong>💡 Recommended Standing Desk:</strong>
+                    <a href="#" onclick="trackAffiliateClick('standing-desk-alert')" style="color: #d97706; text-decoration: underline;">
+                        FlexiDesk Pro Height-Adjustable Desk - $899
+                    </a>
+                </div>
+            </div>
+
+            <!-- Real-time Risk Assessment Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Real-time Health Risk Assessment</h2>
+                        <p class="card-subtitle">Live monitoring of sitting-related health risks</p>
+                    </div>
+                </div>
+
+                <div class="risk-grid" id="riskDisplay">
+                    <div class="risk-card">
+                        <div class="risk-title">❤️ Cardiovascular Disease</div>
+                        <div class="risk-percentage risk-low" id="cardioRisk">+0%</div>
+                        <div class="risk-description">Normal circulation and heart activity</div>
+                    </div>
+                    
+                    <div class="risk-card">
+                        <div class="risk-title">🩺 Type 2 Diabetes</div>
+                        <div class="risk-percentage risk-low" id="diabetesRisk">+0%</div>
+                        <div class="risk-description">Optimal insulin sensitivity</div>
+                    </div>
+                    
+                    <div class="risk-card">
+                        <div class="risk-title">🦴 Back Pain & Posture</div>
+                        <div class="risk-percentage risk-low" id="backRisk">+0%</div>
+                        <div class="risk-description">Good spinal alignment</div>
+                    </div>
+                    
+                    <div class="risk-card">
+                        <div class="risk-title">⚖️ Weight Gain & Obesity</div>
+                        <div class="risk-percentage risk-low" id="obesityRisk">+0%</div>
+                        <div class="risk-description">Normal metabolic activity</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real AdSense Ad Space -->
+            <div id="middle-ad-banner">
+                <!-- AdSense ad will be inserted here -->
+            </div>
+
+            <!-- Health Recommendations Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Health Recommendations</h2>
+                        <p class="card-subtitle">Personalized tips to reduce sitting risks</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <!-- Standing Desk Recommendation -->
+                    <div style="background: linear-gradient(135deg, #fefce8, #fef3c7); padding: 1.5rem; border-radius: 16px; border: 2px solid #fbbf24;">
+                        <h3 style="color: #d97706; margin-bottom: 1rem; font-size: 1.2rem;">🪑 Standing Desk Solution</h3>
+                        <p style="color: #92400e; line-height: 1.6; margin-bottom: 1rem;">Switch between sitting and standing every 30-60 minutes to reduce health risks by up to 40%.</p>
+                        <a href="#" onclick="trackAffiliateClick('standing-desk-main')" style="background: #f59e0b; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
+                            FlexiDesk Pro - $899 →
+                        </a>
+                    </div>
+                    
+                    <!-- Ergonomic Chair -->
+                    <div style="background: linear-gradient(135deg, #f0f9ff, #dbeafe); padding: 1.5rem; border-radius: 16px; border: 2px solid #60a5fa;">
+                        <h3 style="color: #1d4ed8; margin-bottom: 1rem; font-size: 1.2rem;">💺 Ergonomic Seating</h3>
+                        <p style="color: #1e3a8a; line-height: 1.6; margin-bottom: 1rem;">Proper lumbar support reduces back pain risk by 65% and improves posture.</p>
+                        <a href="#" onclick="trackAffiliateClick('ergonomic-chair')" style="background: #3b82f6; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
+                            ErgoChair Elite - $1,299 →
+                        </a>
+                    </div>
+                    
+                    <!-- Health Supplements -->
+                    <div style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); padding: 1.5rem; border-radius: 16px; border: 2px solid #4ade80;">
+                        <h3 style="color: #059669; margin-bottom: 1rem; font-size: 1.2rem;">💊 Metabolic Support</h3>
+                        <p style="color: #065f46; line-height: 1.6; margin-bottom: 1rem;">Specialized supplements to support metabolism and circulation for desk workers.</p>
+                        <a href="#" onclick="trackAffiliateClick('health-supplements')" style="background: #10b981; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
+                            DeskWorker Vitality Pack - $49 →
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real AdSense Ad Space -->
+            <div id="bottom-ad-banner">
+                <!-- AdSense ad will be inserted here -->
+            </div>
+
+            <!-- Enhanced Medical Disclaimer -->
+            <div style="background: linear-gradient(135deg, #fef2f2, #fee2e2); border: 3px solid #dc2626; border-radius: 16px; padding: 2rem; margin: 2rem 0; box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <i class="fas fa-exclamation-triangle" style="color: #dc2626; font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                    <h3 style="color: #dc2626; font-weight: 700; margin: 0; font-size: 1.3rem;">IMPORTANT MEDICAL DISCLAIMER</h3>
+                </div>
+                
+                <div style="color: #7f1d1d; line-height: 1.6;">
+                    <p style="font-weight: 600; margin-bottom: 1rem;">⚠️ FOR EDUCATIONAL PURPOSES ONLY - NOT MEDICAL ADVICE</p>
+                    
+                    <ul style="text-align: left; margin: 0; padding-left: 1.5rem;">
+                        <li><strong>This tool provides general educational information only</strong></li>
+                        <li><strong>Risk calculations are illustrative and may not reflect your personal health situation</strong></li>
+                        <li><strong>Individual health risks vary significantly based on many factors</strong></li>
+                        <li><strong>Always consult qualified healthcare professionals for medical advice</strong></li>
+                        <li><strong>Do not use this tool to self-diagnose or delay seeking professional care</strong></li>
+                    </ul>
+                    
+                    <p style="font-weight: 600; margin-top: 1rem; margin-bottom: 0; text-align: center;">
+                        🩺 For personalized health assessment, please visit your doctor
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="adsense-setup.js"></script>
+
+    <script>
+        // Strong initialization to ensure proper functioning
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Monitor page initializing...');
+            
+            // Force load profile from localStorage with fallback defaults
+            let profileData = null;
+            try {
+                const savedProfile = localStorage.getItem('userProfile');
+                if (savedProfile) {
+                    profileData = JSON.parse(savedProfile);
+                    console.log('✅ Profile loaded from localStorage:', profileData);
+                } else {
+                    throw new Error('No profile data found');
+                }
+            } catch (error) {
+                console.warn('⚠️ No valid profile found, using defaults:', error.message);
+                // Set fallback default values
+                profileData = {
+                    gender: 'male',
+                    age: 30,
+                    height: 170,
+                    weight: 70
+                };
+                // Save defaults to localStorage
+                localStorage.setItem('userProfile', JSON.stringify(profileData));
+            }
+            
+            // Force update all displays
+            forceUpdateAll(profileData);
+            
+            // Initialize timer with real-time total time updates
+            initializeTimer();
+            
+            // Set up interval for real-time total time display
+            setInterval(updateRealTimeTotalTimeDisplay, 1000);
+            
+            // Debug logging every 5 seconds
+            setInterval(() => {
+                console.log('🔍 Debug - Current timer state:', {
+                    isRunning: window.timerInterval !== null,
+                    currentTime: document.getElementById('timerDisplay').textContent,
+                    totalTime: document.getElementById('totalTimeDisplay').textContent,
+                    profile: JSON.parse(localStorage.getItem('userProfile') || '{}')
+                });
+            }, 5000);
+        });
+
+        function forceUpdateAll(profileData) {
+            console.log('🔄 Force updating all displays with:', profileData);
+            
+            // Update profile display
+            document.getElementById('displayGender').textContent = profileData.gender === 'male' ? 'Male' : 'Female';
+            document.getElementById('displayAge').textContent = `${profileData.age} years`;
+            document.getElementById('displayHeight').textContent = `${profileData.height} cm`;
+            document.getElementById('displayWeight').textContent = `${profileData.weight} kg`;
+            
+            // Calculate and display BMI
+            const bmi = (profileData.weight / Math.pow(profileData.height / 100, 2)).toFixed(1);
+            document.getElementById('displayBMI').textContent = bmi;
+            
+            // Ensure risk calculation functions are available
+            if (typeof updateRiskDisplay === 'function') {
+                updateRiskDisplay(0); // Initialize with 0 minutes
+            } else {
+                console.warn('⚠️ updateRiskDisplay function not available');
+            }
+            
+            console.log('✅ All displays force updated');
+        }
+
+        function updateRealTimeTotalTimeDisplay() {
+            try {
+                // Read the correct totalSittingTime object from localStorage
+                const savedData = localStorage.getItem('totalSittingTime');
+                let totalToday = 0;
+                
+                if (savedData) {
+                    const timeData = JSON.parse(savedData);
+                    totalToday = timeData.today || 0;
+                }
+                
+                let currentSessionMs = 0;
+                if (window.timerInterval) {
+                    // Timer is running, get current session time in milliseconds
+                    const timerDisplay = document.getElementById('timerDisplay').textContent;
+                    if (timerDisplay && timerDisplay !== '00:00:00') {
+                        const timeParts = timerDisplay.split(':');
+                        const hours = parseInt(timeParts[0]) || 0;
+                        const minutes = parseInt(timeParts[1]) || 0;
+                        const seconds = parseInt(timeParts[2]) || 0;
+                        currentSessionMs = (hours * 3600 + minutes * 60 + seconds) * 1000;
+                    }
+                }
+                
+                // Calculate total time in milliseconds
+                const realTimeTotalMs = totalToday + currentSessionMs;
+                
+                // Convert to hours, minutes, seconds
+                const totalSeconds = Math.floor(realTimeTotalMs / 1000);
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const secs = totalSeconds % 60;
+                
+                const totalDisplay = document.getElementById('totalTimeDisplay');
+                if (totalDisplay) {
+                    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                    totalDisplay.innerHTML = `Total Today: <span style="color: ${window.timerInterval ? '#10b981' : '#1e293b'}; font-weight: 600;">${formattedTime}</span>`;
+                }
+            } catch (error) {
+                console.warn('⚠️ Total time display error:', error);
+                const totalDisplay = document.getElementById('totalTimeDisplay');
+                if (totalDisplay) {
+                    totalDisplay.innerHTML = `Total Today: <span style="color: #6b7280;">00:00:00</span>`;
+                }
+            }
+        }
+
+        // Affiliate tracking function
+        function trackAffiliateClick(product) {
+            console.log(`🛒 Affiliate click tracked: ${product}`);
+            // Add actual affiliate tracking code here
+            gtag('event', 'affiliate_click', {
+                'product_name': product,
+                'value': 1
+            });
+        }
+    </script>
+
+    <!-- Scientific Basis Section -->
+    <section class="scientific-basis" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 0;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="text-center mb-5">
+                        <h2 class="mb-4" style="font-weight: 700;">📊 Educational Reference Studies</h2>
+                        <p class="lead">Our educational content references established research on sedentary behavior</p>
+                        <p class="small" style="color: rgba(255,255,255,0.8);">⚠️ For illustrative purposes only - not for personal health assessment</p>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="research-card p-4" style="background: rgba(255,255,255,0.1); border-radius: 15px; backdrop-filter: blur(10px);">
+                                <h5><i class="fas fa-globe-americas me-2"></i>WHO Global Study 2024</h5>
+                                <p class="mb-2"><strong>1.8 billion adults at risk</strong> from insufficient physical activity</p>
+                                <p class="small mb-0">World Health Organization - Published June 2024</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="research-card p-4" style="background: rgba(255,255,255,0.1); border-radius: 15px; backdrop-filter: blur(10px);">
+                                <h5><i class="fas fa-heart me-2"></i>Finnish Diabetic Study 2024</h5>
+                                <p class="mb-2"><strong>55% increased cardiovascular risk</strong> from >6h daily sitting</p>
+                                <p class="small mb-0">Cardiovascular Diabetology - Published October 2024</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="research-card p-4" style="background: rgba(255,255,255,0.1); border-radius: 15px; backdrop-filter: blur(10px);">
+                                <h5><i class="fas fa-microscope me-2"></i>Physiology Review 2023</h5>
+                                <p class="mb-2"><strong>Comprehensive analysis</strong> of sedentary behavior physiology</p>
+                                <p class="small mb-0">Physiological Reviews - Published October 2023</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="research-card p-4" style="background: rgba(255,255,255,0.1); border-radius: 15px; backdrop-filter: blur(10px);">
+                                <h5><i class="fas fa-chart-line me-2"></i>German S-MGA Study 2025</h5>
+                                <p class="mb-2"><strong>Long-term health outcomes</strong> from occupational sitting</p>
+                                <p class="small mb-0">International Archives - Published January 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                                            <div class="text-center mt-4">
+                            <p class="mb-2"><strong>Our calculations incorporate:</strong></p>
+                            <p class="small">WHO Physical Activity Guidelines • Meta-analyses of sitting time studies • Age and gender risk factors • BMI-adjusted risk coefficients</p>
+                            
+                            <div class="mt-4 p-3" style="background: rgba(255,255,255,0.15); border-radius: 10px;">
+                                <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i>Educational Reference Information</h6>
+                                <div class="row text-start">
+                                    <div class="col-md-6 mb-2">
+                                        <small><strong>General Patterns:</strong> Based on population studies for educational illustration</small>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <small><strong>Diabetes:</strong> 7% increase per 2-hour blocks (Biswas et al.)</small>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <small><strong>Back Pain:</strong> Linear progression model (Occupational Health)</small>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <small><strong>Obesity:</strong> Weight gain risk per hour (Sedentary Studies)</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Health Risks Section -->
+</body>
+</html> 

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - SitRisk Monitor</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        .policy-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .policy-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .policy-subtitle {
+            color: #64748b;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 2rem 0 1rem 0;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-content {
+            color: #374151;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f9ff, #dbeafe);
+            border: 2px solid #60a5fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border: 2px solid #4ade80;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .policy-card {
+                padding: 2rem;
+                margin: 1rem 0;
+            }
+            
+            .policy-title {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <span>SitRisk Monitor</span>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Profile Setup</a>
+                <a href="monitor.html" class="nav-link">Monitor</a>
+                <a href="privacy.html" class="nav-link">Privacy</a>
+            </nav>
+            <!-- Language Selector -->
+            <div style="position: relative; display: inline-block;">
+                <button id="languageBtn" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                    <i class="fas fa-globe"></i> <span id="currentLang">한국어</span> <i class="fas fa-chevron-down" style="margin-left: 8px;"></i>
+                </button>
+                <div id="languageDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 120px; z-index: 1000; margin-top: 4px;">
+                    <div class="language-option" data-lang="ko" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500; border-bottom: 1px solid #f3f4f6;">🇰🇷 한국어</div>
+                    <div class="language-option" data-lang="en" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500; border-bottom: 1px solid #f3f4f6;">🇺🇸 English</div>
+                    <div class="language-option" data-lang="es" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500; border-bottom: 1px solid #f3f4f6;">🇪🇸 Español</div>
+                    <div class="language-option" data-lang="ja" style="padding: 10px 16px; cursor: pointer; color: #374151; font-weight: 500;">🇯🇵 日本語</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="policy-card">
+            <h1 class="policy-title">Privacy Policy</h1>
+            <p class="policy-subtitle">
+                Your privacy is important to us. This policy explains how we collect, use, and protect your information.
+            </p>
+            
+            <div class="highlight-box">
+                <p><strong>Last Updated:</strong> December 2024</p>
+                <p><strong>Effective Date:</strong> December 2024</p>
+                <p>This Privacy Policy applies to the SitRisk Monitor application available at https://yourusername.github.io/sitting-health-monitor</p>
+            </div>
+
+            <h2 class="section-title">1. Information We Collect</h2>
+            <div class="section-content">
+                <h3 style="font-weight: 600; margin: 1rem 0;">Personal Health Information</h3>
+                <p>We collect the following information that you voluntarily provide:</p>
+                <ul>
+                    <li>Age (for health risk calculations)</li>
+                    <li>Height and Weight (for BMI calculations)</li>
+                    <li>Gender (for personalized risk assessments)</li>
+                    <li>Sitting time data (duration and frequency)</li>
+                </ul>
+                
+                <h3 style="font-weight: 600; margin: 1rem 0;">Usage Data</h3>
+                <p>We automatically collect certain information when you use our service:</p>
+                <ul>
+                    <li>Device type and browser information</li>
+                    <li>IP address and location data</li>
+                    <li>Pages visited and time spent on the application</li>
+                    <li>Interaction patterns and feature usage</li>
+                </ul>
+            </div>
+
+            <h2 class="section-title">2. How We Use Your Information</h2>
+            <div class="section-content">
+                <p>We use your information for the following purposes:</p>
+                <ul>
+                    <li><strong>Health Risk Assessment:</strong> Calculate personalized sitting-related health risks</li>
+                    <li><strong>Service Improvement:</strong> Analyze usage patterns to enhance user experience</li>
+                    <li><strong>Content Personalization:</strong> Provide relevant health recommendations</li>
+                    <li><strong>Analytics:</strong> Generate anonymous statistics for research purposes</li>
+                    <li><strong>Advertising:</strong> Display relevant health and wellness advertisements</li>
+                </ul>
+            </div>
+
+            <h2 class="section-title">3. Data Storage and Security</h2>
+            <div class="section-content">
+                <h3 style="font-weight: 600; margin: 1rem 0;">Local Storage</h3>
+                <p>Your personal health data is primarily stored locally on your device using browser local storage. This means:</p>
+                <ul>
+                    <li>Data remains on your device and is not transmitted to external servers</li>
+                    <li>You have full control over your data</li>
+                    <li>Data persists across browser sessions but can be cleared at any time</li>
+                </ul>
+                
+                <h3 style="font-weight: 600; margin: 1rem 0;">Third-Party Services</h3>
+                <p>We use the following third-party services that may collect data:</p>
+                <ul>
+                    <li><strong>Google Analytics:</strong> For website usage statistics</li>
+                    <li><strong>Google AdSense:</strong> For displaying relevant advertisements</li>
+                    <li><strong>GitHub Pages:</strong> For website hosting</li>
+                </ul>
+            </div>
+
+            <h2 class="section-title">4. Cookies and Tracking Technologies</h2>
+            <div class="section-content">
+                <p>We use cookies and similar technologies to:</p>
+                <ul>
+                    <li>Remember your preferences and settings</li>
+                    <li>Analyze website traffic and user behavior</li>
+                    <li>Serve personalized advertisements</li>
+                    <li>Improve website functionality and performance</li>
+                </ul>
+                <p>You can control cookie settings through your browser preferences. Disabling cookies may affect some features of the application.</p>
+            </div>
+
+            <h2 class="section-title">5. Third-Party Advertising</h2>
+            <div class="section-content">
+                <p>Our website displays advertisements through Google AdSense. These ads may be personalized based on:</p>
+                <ul>
+                    <li>Your browsing history and interests</li>
+                    <li>Geographic location</li>
+                    <li>Device and browser information</li>
+                    <li>Previous interactions with our website</li>
+                </ul>
+                <p>You can opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" style="color: #3b82f6; text-decoration: underline;">Google Ad Settings</a>.</p>
+            </div>
+
+            <h2 class="section-title">6. Data Sharing and Disclosure</h2>
+            <div class="section-content">
+                <p>We do not sell, trade, or share your personal health information with third parties, except:</p>
+                <ul>
+                    <li><strong>Legal Requirements:</strong> When required by law or to protect our rights</li>
+                    <li><strong>Service Providers:</strong> With trusted partners who help operate our service (under strict confidentiality agreements)</li>
+                    <li><strong>Anonymous Data:</strong> Aggregated, non-identifiable data for research and analytics</li>
+                </ul>
+            </div>
+
+            <h2 class="section-title">7. Your Rights and Choices</h2>
+            <div class="section-content">
+                <p>You have the following rights regarding your data:</p>
+                <ul>
+                    <li><strong>Access:</strong> View all data we have about you</li>
+                    <li><strong>Correction:</strong> Update or correct inaccurate information</li>
+                    <li><strong>Deletion:</strong> Request removal of your personal data</li>
+                    <li><strong>Portability:</strong> Export your data in a readable format</li>
+                    <li><strong>Opt-out:</strong> Refuse certain data processing activities</li>
+                </ul>
+                <p>To exercise these rights, please contact us using the information provided below.</p>
+            </div>
+
+            <h2 class="section-title">8. Children's Privacy</h2>
+            <div class="section-content">
+                <p>Our service is not intended for children under 18 years of age. We do not knowingly collect personal information from children. If you believe we have collected information from a child, please contact us immediately.</p>
+            </div>
+
+            <h2 class="section-title">9. International Data Transfers</h2>
+            <div class="section-content">
+                <p>Since we use services like Google Analytics and AdSense, your data may be transferred to and processed in countries outside your residence. We ensure appropriate safeguards are in place to protect your privacy.</p>
+            </div>
+
+            <h2 class="section-title">10. Changes to This Policy</h2>
+            <div class="section-content">
+                <p>We may update this Privacy Policy periodically. Changes will be posted on this page with an updated "Last Modified" date. We encourage you to review this policy regularly to stay informed about how we protect your information.</p>
+            </div>
+
+            <h2 class="section-title">11. Medical Disclaimer</h2>
+            <div class="section-content">
+                <div class="highlight-box">
+                    <p><strong>Important:</strong> SitRisk Monitor is for educational and informational purposes only. It is not intended to:</p>
+                    <ul>
+                        <li>Provide medical advice, diagnosis, or treatment</li>
+                        <li>Replace consultation with healthcare professionals</li>
+                        <li>Serve as a substitute for professional medical care</li>
+                    </ul>
+                    <p>Always consult with qualified healthcare providers for medical concerns or before making health-related decisions.</p>
+                </div>
+            </div>
+
+            <div class="contact-info">
+                <h2 class="section-title" style="margin-top: 0;">Contact Information</h2>
+                <p>If you have questions, concerns, or requests regarding this Privacy Policy or your personal data, please contact us:</p>
+                
+                <div style="margin: 1rem 0;">
+                    <p><strong>Email:</strong> privacy@sitriskmonitor.com</p>
+                    <p><strong>Website:</strong> https://yourusername.github.io/sitting-health-monitor</p>
+                    <p><strong>Response Time:</strong> We aim to respond to all inquiries within 48 hours</p>
+                </div>
+                
+                <p style="font-size: 0.9rem; color: #64748b; margin-top: 1rem;">
+                    For urgent privacy concerns or data deletion requests, please include "URGENT PRIVACY" in your email subject line.
+                </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e2e8f0;">
+                <p style="color: #64748b;">
+                    By using SitRisk Monitor, you acknowledge that you have read and understood this Privacy Policy.
+                </p>
+                <div style="margin-top: 1rem;">
+                    <a href="index.html" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
+                        Return to Application
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

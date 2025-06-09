@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프리미엄 기능 - SitRisk Monitor</title>
+    <style>
+        .premium-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .premium-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .premium-tier {
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .premium-tier:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .tier-popular {
+            border-color: #10b981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(52, 211, 153, 0.05));
+            position: relative;
+        }
+        
+        .tier-popular::before {
+            content: "가장 인기";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .feature-check {
+            color: #10b981;
+            font-weight: bold;
+        }
+        
+        .upgrade-btn {
+            width: 100%;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <!-- 프리미엄 모달 -->
+    <div id="premiumModal" class="premium-modal">
+        <div class="premium-content">
+            <button class="close-btn" onclick="closePremiumModal()">&times;</button>
+            
+            <h2 style="text-align: center; color: #1e293b; margin-bottom: 2rem;">
+                🎯 SitRisk Pro 업그레이드
+            </h2>
+            
+            <!-- 베이직 플랜 -->
+            <div class="premium-tier">
+                <h3 style="color: #374151;">무료 플랜</h3>
+                <div class="price">₩0 <span style="font-size: 1rem; color: #64748b;">/ 월</span></div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> 기본 위험도 측정</li>
+                    <li><span class="feature-check">✓</span> 4가지 질병 위험도</li>
+                    <li><span class="feature-check">✓</span> 일일 사용 기록</li>
+                    <li style="color: #64748b;"><span>✗</span> 상세 건강 분석</li>
+                    <li style="color: #64748b;"><span>✗</span> 개인 맞춤 운동법</li>
+                    <li style="color: #64748b;"><span>✗</span> 의료진 상담</li>
+                </ul>
+            </div>
+            
+            <!-- 프로 플랜 -->
+            <div class="premium-tier tier-popular">
+                <h3 style="color: #10b981;">프로 플랜</h3>
+                <div class="price">₩9,900 <span style="font-size: 1rem; color: #64748b;">/ 월</span></div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> 모든 무료 기능</li>
+                    <li><span class="feature-check">✓</span> 📊 상세 건강 분석 리포트</li>
+                    <li><span class="feature-check">✓</span> 🏃‍♂️ 개인 맞춤 운동 프로그램</li>
+                    <li><span class="feature-check">✓</span> 📈 30일 건강 트렌드 분석</li>
+                    <li><span class="feature-check">✓</span> 🔔 스마트 알림 (Apple Watch 연동)</li>
+                    <li><span class="feature-check">✓</span> 📱 모바일 앱 (iOS/Android)</li>
+                    <li><span class="feature-check">✓</span> ☁️ 클라우드 데이터 백업</li>
+                </ul>
+                <button class="upgrade-btn" onclick="upgradeToPro()">
+                    프로 플랜 시작하기 (7일 무료체험)
+                </button>
+            </div>
+            
+            <!-- 프리미엄 플랜 -->
+            <div class="premium-tier">
+                <h3 style="color: #8b5cf6;">프리미엄 플랜</h3>
+                <div class="price">₩19,900 <span style="font-size: 1rem; color: #64748b;">/ 월</span></div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> 모든 프로 기능</li>
+                    <li><span class="feature-check">✓</span> 👨‍⚕️ 월 1회 의료진 화상 상담</li>
+                    <li><span class="feature-check">✓</span> 🩺 정밀 건강 검진 추천</li>
+                    <li><span class="feature-check">✓</span> 🎯 AI 기반 질병 예측</li>
+                    <li><span class="feature-check">✓</span> 👥 가족 계정 (최대 4명)</li>
+                    <li><span class="feature-check">✓</span> 🏢 직장 건강관리 대시보드</li>
+                    <li><span class="feature-check">✓</span> 📞 24시간 고객지원</li>
+                </ul>
+                <button class="upgrade-btn" onclick="upgradeToPremium()">
+                    프리미엄 플랜 시작하기
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem; padding: 1rem; background: #f8fafc; border-radius: 12px;">
+                <p style="margin: 0; color: #64748b; font-size: 0.9rem;">
+                    💳 언제든지 취소 가능 | 🔒 안전한 결제 | 📞 24시간 고객지원
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPremiumModal() {
+            document.getElementById('premiumModal').style.display = 'flex';
+            
+            // Google Analytics 이벤트
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'premium_modal_view', {
+                    event_category: 'Premium',
+                    event_label: 'Modal Opened'
+                });
+            }
+        }
+        
+        function closePremiumModal() {
+            document.getElementById('premiumModal').style.display = 'none';
+        }
+        
+        function upgradeToPro() {
+            // 실제로는 결제 페이지로 리다이렉트
+            alert('프로 플랜 결제 페이지로 이동합니다.\n(실제 구현 시 Stripe/KakaoPay 연동)');
+            
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'upgrade_click', {
+                    event_category: 'Premium',
+                    event_label: 'Pro Plan',
+                    value: 9900
+                });
+            }
+        }
+        
+        function upgradeToPremium() {
+            alert('프리미엄 플랜 결제 페이지로 이동합니다.');
+            
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'upgrade_click', {
+                    event_category: 'Premium',
+                    event_label: 'Premium Plan',
+                    value: 19900
+                });
+            }
+        }
+        
+        // 5분 후 프리미엄 모달 자동 표시
+        setTimeout(() => {
+            showPremiumModal();
+        }, 300000); // 5분
+    </script>
+</body>
+</html> 
