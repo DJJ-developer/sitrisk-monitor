@@ -449,6 +449,20 @@
             #top-ad-banner, #middle-ad-banner, #bottom-ad-banner {
                 margin: 1rem 0;
             }
+            
+            .chart-container {
+                height: 300px;
+                padding: 1rem;
+            }
+            
+            .chart-container canvas {
+                max-height: 200px !important;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
+            }
         }
 
         /* Statistics and Charts */
@@ -497,6 +511,14 @@
             border-radius: 16px;
             padding: 1.5rem;
             border: 2px solid #e2e8f0;
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chart-container canvas {
+            max-height: 250px !important;
+            flex: 1;
         }
 
         .period-btn {
@@ -668,6 +690,10 @@
             background: linear-gradient(135deg, #334155, #475569) !important;
             color: #f1f5f9 !important;
             border-color: #475569 !important;
+        }
+        
+        .dark-mode .chart-container canvas {
+            max-height: 250px !important;
         }
 
         .dark-mode .stat-value {
