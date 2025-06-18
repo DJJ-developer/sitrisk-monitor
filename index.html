@@ -651,17 +651,25 @@
                 <div class="text-center max-w-4xl mx-auto">
                     <!-- 바이럴 헤드라인 -->
                     <div style="background: linear-gradient(45deg, #ff4757, #ff6b6b); color: white; padding: 15px; border-radius: 10px; margin-bottom: 30px; animation: pulse 2s infinite;">
-                        <h1 style="font-size: 2rem; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">⚠️ 충격! 하루 8시간 앉아있으면 수명이 22% 단축됩니다!</h1>
-                        <p style="margin: 10px 0 0 0; font-size: 1.1rem;">NASA 연구진이 밝힌 충격적인 진실... 지금 바로 확인하세요!</p>
+                        <h1 style="font-size: 2rem; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);" id="viralHeadline">⚠️ SHOCKING! Sitting 8 hours daily reduces lifespan by 22%</h1>
+                        <p style="margin: 10px 0 0 0; font-size: 1.1rem;" id="viralSubtitle">NASA researchers reveal shocking truth... Check your health risk NOW!</p>
+                        <div style="margin-top: 15px;">
+                            <button onclick="switchLanguage('en')" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 5px 10px; margin: 2px; border-radius: 5px; cursor: pointer; font-size: 0.85rem;">EN</button>
+                            <button onclick="switchLanguage('ko')" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 5px 10px; margin: 2px; border-radius: 5px; cursor: pointer; font-size: 0.85rem;">한국어</button>
+                            <button onclick="switchLanguage('ja')" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 5px 10px; margin: 2px; border-radius: 5px; cursor: pointer; font-size: 0.85rem;">日本語</button>
+                            <button onclick="switchLanguage('es')" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 5px 10px; margin: 2px; border-radius: 5px; cursor: pointer; font-size: 0.85rem;">Español</button>
+                        </div>
                     </div>
                     
                     <!-- 소셜 공유 버튼 -->
                     <div style="margin: 20px 0; text-align: center;">
-                        <div style="display: inline-flex; gap: 10px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                            <button onclick="shareToKakao()" style="background: #FEE500; color: #3C1E1E; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">카톡 공유</button>
-                            <button onclick="shareToFacebook()" style="background: #1877F2; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">페북 공유</button>
-                            <button onclick="shareToTwitter()" style="background: #1DA1F2; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">트위터</button>
-                            <button onclick="copyLink()" style="background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">링크 복사</button>
+                        <div style="display: inline-flex; gap: 10px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); flex-wrap: wrap; justify-content: center;">
+                            <button onclick="shareToKakao()" style="background: #FEE500; color: #3C1E1E; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">KakaoTalk</button>
+                            <button onclick="shareToFacebook()" style="background: #1877F2; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">Facebook</button>
+                            <button onclick="shareToTwitter()" style="background: #1DA1F2; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">Twitter</button>
+                            <button onclick="shareToLinkedIn()" style="background: #0077B5; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">LinkedIn</button>
+                            <button onclick="shareToReddit()" style="background: #FF4500; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">Reddit</button>
+                            <button onclick="copyLink()" style="background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;" id="copyBtn">Copy Link</button>
                         </div>
                     </div>
 
@@ -670,19 +678,19 @@
                     
                     <!-- 실시간 통계 (가짜지만 효과적) -->
                     <div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; margin: 30px 0; border: 1px solid rgba(255,255,255,0.3);">
-                        <div style="color: white; font-size: 1.1rem; margin-bottom: 15px;">🔥 실시간 건강 위험도 체크 현황</div>
+                        <div style="color: white; font-size: 1.1rem; margin-bottom: 15px;" id="statsTitle">🔥 Real-time Health Risk Check Status</div>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; color: white;">
                             <div>
                                 <div style="font-size: 2rem; font-weight: bold;" id="todayUsers">12,847</div>
-                                <div style="font-size: 0.9rem; opacity: 0.8;">오늘 체크한 사람</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;" id="todayUsersLabel">People checked today</div>
                             </div>
                             <div>
                                 <div style="font-size: 2rem; font-weight: bold; color: #ff6b6b;" id="highRiskUsers">3,241</div>
-                                <div style="font-size: 0.9rem; opacity: 0.8;">고위험군 발견</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;" id="highRiskLabel">High-risk detected</div>
                             </div>
                             <div>
-                                <div style="font-size: 2rem; font-weight: bold; color: #feca57;" id="avgSittingTime">8.3시간</div>
-                                <div style="font-size: 0.9rem; opacity: 0.8;">평균 좌식시간</div>
+                                <div style="font-size: 2rem; font-weight: bold; color: #feca57;" id="avgSittingTime">8.3h</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;" id="avgSittingLabel">Average sitting time</div>
                             </div>
                         </div>
                     </div>
