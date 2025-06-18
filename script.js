@@ -2449,10 +2449,9 @@ function shareToTwitter() {
 }
 
 function shareToLinkedIn() {
-    const content = viralContent[currentLanguage];
     const url = encodeURIComponent(window.location.href);
-    const title = encodeURIComponent(content.headline);
-    const summary = encodeURIComponent(content.subtitle);
+    const title = encodeURIComponent('Evidence-Based Workplace Health Risk Assessment Tool');
+    const summary = encodeURIComponent('Monitor and improve workplace wellness with science-based health risk assessment. Based on Mayo Clinic and Harvard Medical research.');
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}&summary=${summary}`, '_blank', 'width=600,height=400');
 }
 
